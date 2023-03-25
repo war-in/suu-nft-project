@@ -1,16 +1,19 @@
-import React from 'react';
+import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import EthereumContextProvider from './EthereumContext';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+  <StrictMode>
+    <EthereumContextProvider>
+      <App />
+    </EthereumContextProvider>
+  </StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function
