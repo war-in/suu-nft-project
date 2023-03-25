@@ -1,12 +1,5 @@
 import { createContext, useContext } from "react";
 import Web3 from "web3";
-import { MetaMaskInpageProvider } from "@metamask/providers";
-
-declare global {
-    interface Window {
-      ethereum: MetaMaskInpageProvider;
-    }
-  }
 
 interface EthActions {
     connectWallet: () => Promise<void>;
@@ -17,13 +10,13 @@ interface Props {
     children: JSX.Element;
 }
 
-const ethereum = window.ethereum;
-//@ts-ignore
-const web3 = new Web3(ethereum);
-
 const EthereumContext = createContext({} as EthActions);
 
 export const EthereumContextProvider = ({children}: Props): JSX.Element => {
+    const ethereum = window.ethereum;
+    //@ts-ignore
+    const web3 = new Web3(ethereum);
+
     const connectWallet = async () => {
         try {
             await ethereum.request({ method: "eth_requestAccounts"});
