@@ -1,25 +1,30 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from 'react';
+import NoEthProvider from './components/NoEthProvider';
+import { useEthereum } from './EthereumContext';
 
 function App() {
+  const { connectWallet, getWalletAddress } = useEthereum();
+  const [walletAddress, setWalletAddress] = useState('');
+
+  useEffect(() => {
+    const getAndSetWalletAddress = async () => {
+      const address = await getWalletAddress();
+      setWalletAddress(address);
+    }
+    getAndSetWalletAddress();
+  })
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      { 
+        window.ethereum === undefined 
+        ? <NoEthProvider /> 
+        : <div>
+            <button onClick={connectWallet}>Connect a wallet</button>
+            <p>Your wallet address {walletAddress}</p>
+          </div> 
+      }
+    </>
   );
 }
 
