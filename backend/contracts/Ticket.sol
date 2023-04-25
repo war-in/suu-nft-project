@@ -8,15 +8,33 @@ contract Ticket is ERC721 {
     using Counters for Counters.Counter;
     Counters.Counter private currentTokenId;
 
-    constructor() ERC721("Ticket", "TCK") {}
+    address ranks;
+    uint256[] saleStartTimePerRank;
+    uint8[] maxTicketsPerUserPerRank;
+    uint256[] ticketPricePerRank;
 
-    function mintTo(address recipient)
-    public
-    returns (uint256)
-    {
+    constructor(
+        string memory name,
+        string memory symbol,
+        address ranksAddress,
+        uint256[] memory saleStartTimePerRank_,
+        uint8[] memory maxTicketsPerUserPerRank_,
+        uint256[] memory ticketPricePerRank_
+    ) ERC721(name, symbol) {
+        ranks = ranksAddress;
+        saleStartTimePerRank = saleStartTimePerRank_;
+        maxTicketsPerUserPerRank = maxTicketsPerUserPerRank_;
+        ticketPricePerRank = ticketPricePerRank_;
+    }
+
+    function mintTo(address recipient) public returns (uint256) {
         currentTokenId.increment();
         uint256 newItemId = currentTokenId.current();
         _safeMint(recipient, newItemId);
         return newItemId;
+    }
+
+    function getRanksAddress() public view returns (address) {
+        return ranks;
     }
 }
