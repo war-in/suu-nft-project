@@ -7,6 +7,8 @@
     "@types/chai": "^4.3.4",
     "@types/mocha": "^10.0.1",
     "@types/node": "^18.15.9",
+    "prettier": "^2.8.8",
+    "prettier-plugin-solidity": "^1.1.3",
     "truffle": "^5.8.1",
     "ts-node": "^10.9.1",
     "typechain": "^8.1.1",
@@ -14,6 +16,7 @@
   },
   "scripts": {
     "generate-types": "npx typechain --target=truffle-v5 'build/contracts/*.json'",
-    "postinstall": "npx truffle compile && npm run generate-types"
+    "postinstall": "npx truffle compile && npm run generate-types",
+    "prettier": "prettier --write 'contracts/**/*.sol'"
   }
 }
