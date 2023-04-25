@@ -3,11 +3,15 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract Rank is ERC721, AccessControl {
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
 
-    uint256 price;
+    using Counters for Counters.Counter;
+    Counters.Counter private currentTokenId;
+
+    uint256 public price;
 
     constructor(
         string memory name,
@@ -17,6 +21,13 @@ contract Rank is ERC721, AccessControl {
         _grantRole(ADMIN_ROLE, msg.sender);
 
         price = price_;
+    }
+
+    function mintTo(address recipient) public returns (uint256) {
+        currentTokenId.increment();
+        uint256 newItemId = currentTokenId.current();
+        _safeMint(recipient, newItemId);
+        return newItemId;
     }
 
     function supportsInterface(

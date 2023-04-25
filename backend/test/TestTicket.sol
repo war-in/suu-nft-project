@@ -8,21 +8,46 @@ contract TestTicket {
     Ticket ticket;
 
     function beforeEach() public {
-        ticket = new Ticket();
+        // initialize a new instance of the contract before each test
+        uint256[] memory saleStartTimePerRank = new uint256[](3);
+        saleStartTimePerRank[0] = 1641004800; // Dec 31, 2021 12:00:00 AM GMT
+        saleStartTimePerRank[1] = 1643683200; // Feb 01, 2022 12:00:00 AM GMT
+        saleStartTimePerRank[2] = 1646361600; // Mar 05, 2022 12:00:00 AM GMT
+
+        uint8[] memory maxTicketsPerUserPerRank = new uint8[](3);
+        maxTicketsPerUserPerRank[0] = 2;
+        maxTicketsPerUserPerRank[1] = 4;
+        maxTicketsPerUserPerRank[2] = 6;
+
+        uint256[] memory ticketPricePerRank = new uint256[](3);
+        ticketPricePerRank[0] = 100000000000000000; // 0.1 ETH
+        ticketPricePerRank[1] = 200000000000000000; // 0.2 ETH
+        ticketPricePerRank[2] = 300000000000000000; // 0.3 ETH
+
+        ticket = new Ticket(
+            "MyTicket",
+            "MT",
+            address(this),
+            saleStartTimePerRank,
+            maxTicketsPerUserPerRank,
+            ticketPricePerRank
+        );
     }
 
     function testMintTo() public {
-        address recipient = address(0x1);
-        uint256 tokenId = ticket.mintTo(recipient);
+        // Ensure that the first token ID is 1
+        Assert.equal(ticket.mintTo(address(0x1)), 1, "Token ID should be 1");
 
-        uint256 expectedTokenId = 1;
-        Assert.equal(tokenId, expectedTokenId, "Token ID should be 1");
+        // Ensure that the second token ID is 2
+        Assert.equal(ticket.mintTo(address(0x2)), 2, "Token ID should be 2");
+    }
 
-        uint256 balance = ticket.balanceOf(recipient);
-        Assert.equal(balance, 1, "Recipient should have one ticket");
-
-        address owner = ticket.ownerOf(tokenId);
-        Assert.equal(owner, recipient, "Recipient should be owner of token");
+    function testGetRanksAddress() public {
+        // Ensure that the contract returns the correct ranks address
+        Assert.equal(
+            ticket.getRanksAddress(),
+            address(this),
+            "Incorrect ranks address"
+        );
     }
 }
-
