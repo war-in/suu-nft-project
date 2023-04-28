@@ -24,6 +24,8 @@ contract Rank is ERC721, AccessControl {
     }
 
     function mintTo(address recipient) public returns (uint256) {
+        require(hasRole(ADMIN_ROLE, msg.sender), "Caller is not an admin");
+
         currentTokenId.increment();
         uint256 newItemId = currentTokenId.current();
         _safeMint(recipient, newItemId);
