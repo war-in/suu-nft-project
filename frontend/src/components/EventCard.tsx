@@ -23,7 +23,7 @@ function EventCard(props: Props) {
     <VerticalContainer onClick={onClick}>
       <StyledName>{props.event.name}</StyledName>
       <StyledDate>
-        Created at: <br></br>
+        Date: <br></br>
         {getDateFormated(new Date(props.event.date))}
       </StyledDate>
     </VerticalContainer>
