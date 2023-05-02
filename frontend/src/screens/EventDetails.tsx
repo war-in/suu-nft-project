@@ -30,7 +30,7 @@ function EventDetails() {
           onChange={(number) => setTicketsNumber(Number(number.target.value))}
         />
         <StyledButton disabled={ticketsNumber <= 0} onClick={buyTicket}>
-          Buy ticket
+          Buy tickets
         </StyledButton>
       </HorizontalDiv>
     </CenteredDiv>
