@@ -16,8 +16,6 @@ jobs:
         image: trufflesuite/ganache-cli:v6.12.2
         ports:
           - 7545:7545
-        options: >-
-          --networkId 5777
 
     steps:
       - uses: actions/checkout@v2
