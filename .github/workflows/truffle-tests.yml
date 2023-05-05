@@ -26,10 +26,10 @@ jobs:
           node-version: 14
 
       - name: Install Dependencies
-        run: npm install
+        run: npm install -g
 
       - name: Install truffle
-        run: npm install truffle
+        run: npm install -g truffle
 
       # Run tests
       - name: Run tests
