@@ -1,35 +1,26 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "@openzeppelin/contracts/access/AccessControl.sol";
 
-contract Ticket is ERC721, AccessControl {
+contract Rank is ERC721, AccessControl {
+    bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
+
     using Counters for Counters.Counter;
     Counters.Counter private currentTokenId;
 
-    bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
-
-    address ranksAddress;
-    uint256[] saleStartTimePerRank;
-    uint8[] maxTicketsPerUserPerRank;
-    uint256[] ticketPricePerRank;
+    uint256 public price;
 
     constructor(
         string memory name,
         string memory symbol,
-        address ranksAddress_,
-        uint256[] memory saleStartTimePerRank_,
-        uint8[] memory maxTicketsPerUserPerRank_,
-        uint256[] memory ticketPricePerRank_
+        uint256 price_
     ) ERC721(name, symbol) {
         _grantRole(ADMIN_ROLE, msg.sender);
 
-        ranksAddress = ranksAddress_;
-        saleStartTimePerRank = saleStartTimePerRank_;
-        maxTicketsPerUserPerRank = maxTicketsPerUserPerRank_;
-        ticketPricePerRank = ticketPricePerRank_;
+        price = price_;
     }
 
     function mintTo(address recipient) public returns (uint256) {
@@ -39,10 +30,6 @@ contract Ticket is ERC721, AccessControl {
         uint256 newItemId = currentTokenId.current();
         _safeMint(recipient, newItemId);
         return newItemId;
-    }
-
-    function getRanksAddress() public view returns (address) {
-        return ranksAddress;
     }
 
     function supportsInterface(
