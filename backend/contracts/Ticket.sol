@@ -11,7 +11,7 @@ contract Ticket is ERC721, AccessControl {
 
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
 
-    address ranks;
+    address ranksAddress;
     uint256[] saleStartTimePerRank;
     uint8[] maxTicketsPerUserPerRank;
     uint256[] ticketPricePerRank;
@@ -19,14 +19,14 @@ contract Ticket is ERC721, AccessControl {
     constructor(
         string memory name,
         string memory symbol,
-        address ranksAddress,
+        address ranksAddress_,
         uint256[] memory saleStartTimePerRank_,
         uint8[] memory maxTicketsPerUserPerRank_,
         uint256[] memory ticketPricePerRank_
     ) ERC721(name, symbol) {
         _grantRole(ADMIN_ROLE, msg.sender);
 
-        ranks = ranksAddress;
+        ranksAddress = ranksAddress_;
         saleStartTimePerRank = saleStartTimePerRank_;
         maxTicketsPerUserPerRank = maxTicketsPerUserPerRank_;
         ticketPricePerRank = ticketPricePerRank_;
@@ -42,7 +42,7 @@ contract Ticket is ERC721, AccessControl {
     }
 
     function getRanksAddress() public view returns (address) {
-        return ranks;
+        return ranksAddress;
     }
 
     function supportsInterface(
