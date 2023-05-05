@@ -20,6 +20,9 @@ jobs:
         with:
           node-version: '14.x'
 
+      - name: Change directory
+        run: cd backend
+
       # Install Truffle
       - name: Install Truffle
         run: npm install -g truffle
