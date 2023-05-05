@@ -32,7 +32,6 @@ jobs:
 
       - name: Start Ganache
         run: ganache-cli $OPTIONS &>/dev/null &
-        background: true
 
       # Run tests
       - name: Run tests
