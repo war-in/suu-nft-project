@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      ganache:
+      development:
         image: trufflesuite/ganache-cli:v6.12.2
         ports:
           - 7545:7545
