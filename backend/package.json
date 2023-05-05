@@ -20,6 +20,6 @@
   "scripts": {
     "generate-types": "npx typechain --target=truffle-v5 'build/contracts/*.json'",
     "postinstall": "npx truffle compile && npm run generate-types",
-    "prettier": "prettier --write 'contracts/**/*.sol' 'test/**/*.sol'"
+    "prettier": "prettier --write 'contracts/**/*.sol' 'test/**/*.js'"
   }
 }

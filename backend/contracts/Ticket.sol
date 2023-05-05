@@ -3,10 +3,13 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
 
-contract Ticket is ERC721 {
+contract Ticket is ERC721, AccessControl {
     using Counters for Counters.Counter;
     Counters.Counter private currentTokenId;
+
+    bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
 
     address ranks;
     uint256[] saleStartTimePerRank;
@@ -21,6 +24,8 @@ contract Ticket is ERC721 {
         uint8[] memory maxTicketsPerUserPerRank_,
         uint256[] memory ticketPricePerRank_
     ) ERC721(name, symbol) {
+        _grantRole(ADMIN_ROLE, msg.sender);
+
         ranks = ranksAddress;
         saleStartTimePerRank = saleStartTimePerRank_;
         maxTicketsPerUserPerRank = maxTicketsPerUserPerRank_;
@@ -28,6 +33,8 @@ contract Ticket is ERC721 {
     }
 
     function mintTo(address recipient) public returns (uint256) {
+        require(hasRole(ADMIN_ROLE, msg.sender), "Caller is not an admin");
+
         currentTokenId.increment();
         uint256 newItemId = currentTokenId.current();
         _safeMint(recipient, newItemId);
@@ -36,5 +43,11 @@ contract Ticket is ERC721 {
 
     function getRanksAddress() public view returns (address) {
         return ranks;
+    }
+
+    function supportsInterface(
+        bytes4 interfaceId
+    ) public view virtual override(ERC721, AccessControl) returns (bool) {
+        return super.supportsInterface(interfaceId);
     }
 }
