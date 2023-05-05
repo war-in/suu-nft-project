@@ -11,25 +11,31 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    services:
+      ganache:
+        image: trufflesuite/ganache-cli:v6.12.2
+        env:
+          - OPTIONS=-p 7545 -i 5777 -d
+        ports:
+          - 7545:7545
+
     steps:
       - uses: actions/checkout@v2
 
-      # Set up Node.js environment
-      - name: Use Node.js 14.x
+      - name: Install Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14.x'
+          node-version: 14
 
-      # Install Truffle
-      - name: Install Truffle
-        run: npm install -g truffle
-
-      # Install dependencies
-      - name: Install dependencies
+      - name: Install Dependencies
         run: npm install
+
+      - name: Start Ganache
+        run: ganache-cli $OPTIONS &>/dev/null &
+        background: true
 
       # Run tests
       - name: Run tests
-        run:
+        run: |
           cd backend
           truffle test
