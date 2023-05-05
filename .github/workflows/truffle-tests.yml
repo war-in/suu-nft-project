@@ -14,10 +14,10 @@ jobs:
     services:
       ganache:
         image: trufflesuite/ganache-cli:v6.12.2
-        env:
-          - OPTIONS=-p 7545 -i 5777 -d
         ports:
           - 7545:7545
+        options: >-
+          --networkId 5777
 
     steps:
       - uses: actions/checkout@v2
@@ -30,11 +30,8 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Start Ganache
-        run: ganache-cli $OPTIONS &>/dev/null &
-
       # Run tests
       - name: Run tests
         run: |
           cd backend
-          truffle test
+          truffle test --network ganache
