@@ -30,6 +30,9 @@ jobs:
           cd backend
           npm install
 
+      - name: Install truffle
+        run: npm install -g truffle
+
       # Run tests
       - name: Run tests
         run: |
