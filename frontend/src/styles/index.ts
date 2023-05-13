@@ -17,6 +17,7 @@ export const StyledButton = styled.button`
   padding: 0.5rem 1rem;
   border-radius: 2rem;
   border-color: transparent;
+  cursor: pointer;
   :disabled {
     background-color: #ebebe4;
   }
