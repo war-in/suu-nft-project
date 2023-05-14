@@ -28,7 +28,7 @@ contract Ticket is ERC721, AccessControl {
     /**
      * @notice Defines max amount of ticket per user with some Rank.
      */
-    uint8[] public maxTicketsPerUserPerRank;
+    uint256[] public maxTicketsPerUserPerRank;
     /**
      * @notice Defines price of the ticket per Rank.
      */
@@ -51,10 +51,19 @@ contract Ticket is ERC721, AccessControl {
         string memory symbol,
         address ranksAddress_,
         uint256[] memory saleStartTimePerRank_,
-        uint8[] memory maxTicketsPerUserPerRank_,
+        uint256[] memory maxTicketsPerUserPerRank_,
         uint256[] memory ticketPricePerRank_
     ) ERC721(name, symbol) {
         _grantRole(ADMIN_ROLE, msg.sender);
+
+        require(
+            uint(Ranks(ranksAddress_).numberOfRanks()) + 1 ==
+                saleStartTimePerRank_.length &&
+                saleStartTimePerRank_.length ==
+                maxTicketsPerUserPerRank_.length &&
+                maxTicketsPerUserPerRank_.length == ticketPricePerRank_.length,
+            "Wrong number of values in arrays. Remember about the open sale."
+        );
 
         ranksAddress = ranksAddress_;
         saleStartTimePerRank = saleStartTimePerRank_;
@@ -68,25 +77,25 @@ contract Ticket is ERC721, AccessControl {
      */
     function buy(uint amount) external payable {
         Ranks ranks = Ranks(ranksAddress);
-        int rankId = ranks.getCurrentRank(msg.sender);
+        uint rankId = uint(ranks.getCurrentRank(msg.sender) + 1);
 
         require(
-            block.timestamp >= saleStartTimePerRank[rankId + 1],
+            block.timestamp >= saleStartTimePerRank[rankId],
             "Sale does not started for your Rank yet!"
         );
         require(
-            amount <= maxTicketsPerUserPerRank[rankId + 1],
-            "You can't buy so many tickets witch your Rank."
+            amount <= maxTicketsPerUserPerRank[rankId] - balanceOf(msg.sender),
+            "You can't buy so many tickets with your Rank."
         );
         require(
-            msg.value >= ticketPricePerRank[rankId + 1] * amount,
+            msg.value >= ticketPricePerRank[rankId] * amount,
             "Send more funds to buy those tickets."
         );
 
         for (uint i = 0; i < amount; i++) {
             currentTokenId.increment();
             uint256 newItemId = currentTokenId.current();
-            _safeMint(recipient, newItemId);
+            _safeMint(msg.sender, newItemId);
         }
     }
 
