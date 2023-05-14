@@ -24,7 +24,7 @@ export const EthereumContextProvider = ({children}: Props): JSX.Element => {
 
     const connectWallet = async () => {
         try {
-            const res = await ethereum.request({ method: "eth_requestAccounts"});
+            const res = await web3.eth.requestAccounts();
             if(res && Array.isArray(res)) {
                 setWalletAddress(res[0]);
             }
