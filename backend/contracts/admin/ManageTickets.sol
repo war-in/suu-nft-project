@@ -9,7 +9,7 @@ contract ManageTickets is AccessControl {
     /**
      * @notice To get Ticket contract address pass it's name.
      */
-    mapping(string => address) public ticketsByNames;
+    mapping(string => address) public ticketsByName;
     /**
      * @dev Array containing names of all Ticket contracts.
      */
@@ -21,8 +21,8 @@ contract ManageTickets is AccessControl {
 
     /**
      * @notice Creates Ticket contract.
-     * @param name Unique name of the NFT Ticket contract. Will be used to store it's address.
-     * @param symbol Symbol of the NFT contract.
+     * @param ticketName Unique name of the NFT Ticket contract. Will be used to store it's address.
+     * @param ticketSymbol Symbol of the NFT contract.
      * @param ranksAddress Address of the Ranks contract which defines available ranks for an event.
      * @param saleStartTimePerRank Array defining when the sale starts for each Rank.
      * Open sale date is at index 0.
@@ -36,12 +36,16 @@ contract ManageTickets is AccessControl {
         string memory ticketSymbol,
         address ranksAddress,
         uint256[] memory saleStartTimePerRank,
-        uint8[] memory maxTicketsPerUserPerRank,
+        uint256[] memory maxTicketsPerUserPerRank,
         uint256[] memory ticketPricePerRank
     ) public {
         require(hasRole(ADMIN_ROLE, msg.sender), "Caller is not an admin");
+        require(
+            ticketsByName[ticketName] == address(0),
+            "Ticket contract with this name already exists!"
+        );
 
-        ticketsByNames[ticketName] = address(
+        ticketsByName[ticketName] = address(
             new Ticket(
                 ticketName,
                 ticketSymbol,
