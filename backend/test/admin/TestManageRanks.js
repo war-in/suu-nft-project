@@ -1,5 +1,5 @@
 const { expect } = require("chai");
-const { BN, expectRevert } = require("@openzeppelin/test-helpers");
+const { expectRevert } = require("@openzeppelin/test-helpers");
 
 const ManageRanks = artifacts.require("ManageRanks");
 
