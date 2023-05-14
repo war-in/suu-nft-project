@@ -4,14 +4,16 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 
-contract Rank is ERC721, AccessControl {
+contract Rank is ERC721, ERC721Burnable, AccessControl {
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
 
     using Counters for Counters.Counter;
     Counters.Counter private currentTokenId;
 
     uint256 public price;
+    mapping(address => uint) public ownerToToken;
 
     constructor(
         string memory name,
@@ -29,6 +31,9 @@ contract Rank is ERC721, AccessControl {
         currentTokenId.increment();
         uint256 newItemId = currentTokenId.current();
         _safeMint(recipient, newItemId);
+
+        ownerToToken[recipient] = newItemId;
+
         return newItemId;
     }
 
