@@ -6,6 +6,7 @@ interface EthActions {
     walletAddress?: string;
     connectWallet: () => Promise<void>;
     getWalletAddressAsync: () => Promise<string>;
+    testContractInteraction: () => Promise<void>;
 }
 
 interface Props {
@@ -14,7 +15,7 @@ interface Props {
 
 const EthereumContext = createContext({} as EthActions);
 
-export const EthereumContextProvider = ({children}: Props): JSX.Element => {
+export const EthereumContextProvider = ({ children }: Props): JSX.Element => {
     const ethereum = window.ethereum;
     //@ts-ignore
     const web3 = new Web3(ethereum);
@@ -25,10 +26,10 @@ export const EthereumContextProvider = ({children}: Props): JSX.Element => {
     const connectWallet = async () => {
         try {
             const res = await web3.eth.requestAccounts();
-            if(res && Array.isArray(res)) {
+            if (res && Array.isArray(res)) {
                 setWalletAddress(res[0]);
             }
-        } catch(err) {
+        } catch (err) {
             console.warn(err);
         }
     }
@@ -38,10 +39,20 @@ export const EthereumContextProvider = ({children}: Props): JSX.Element => {
         return addresses[0];
     }
 
+    const testContractInteraction = async () => {
+        try {
+            const result = await contracts.ticketContract.methods.getRanksAddress().send({ from: walletAddress });
+            console.log(result)
+        } catch (err) {
+            console.warn(err);
+        }
+    }
+
     const actions: EthActions = {
         walletAddress,
         connectWallet,
-        getWalletAddressAsync
+        getWalletAddressAsync,
+        testContractInteraction,
     }
 
     return (

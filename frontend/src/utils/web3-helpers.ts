@@ -42,7 +42,7 @@ export const setupContracts = (): Contracts => {
 
     const adminContract = new Contract(formattedAdminContract.abi, '0x0000000000000000000000000000000000000000');  /// TODO: Paste proper address
     const rankContract = new Contract(formattedRankContract.abi, '0x0000000000000000000000000000000000000000');   /// TODO: Paste proper address
-    const ranksContract = new Contract(formattedRanksContract.abi, '0x0000000000000000000000000000000000000000');   /// TODO: Paste proper address
+    const ranksContract = new Contract(formattedRanksContract.abi, '0x25173feAFc2dBB9FA711d3A1680e932362e9cBc7');   /// TODO: Paste proper address
     const ticketContract = new Contract(formattedTicketContract.abi, '0xFCFfC4B8f43A2129AE144A43B174882FfD34Ed1d');
 
     return {
