@@ -1,5 +1,11 @@
 import { createContext, useContext, useState } from "react";
 import Web3 from "web3";
+import Contract from "web3-eth-contract";
+import AdminABI from './abi/admin';
+import RankABI from './abi/rank';
+import RanksABI from './abi/ranks';
+import TicketABI from './abi/ticket';
+import { formatABI } from "./utils/abi-formatter";
 
 interface EthActions {
     walletAddress?: string;
@@ -17,6 +23,12 @@ export const EthereumContextProvider = ({children}: Props): JSX.Element => {
     const ethereum = window.ethereum;
     //@ts-ignore
     const web3 = new Web3(ethereum);
+    Contract.setProvider("http://localhost:7545");
+
+    const adminContract = new Contract(formatABI(AdminABI));
+    const rankContract = new Contract(formatABI(RankABI));
+    const ranksContract = new Contract(formatABI(RanksABI));
+    const ticketContract = new Contract(formatABI(TicketABI));
 
     const [walletAddress, setWalletAddress] = useState<string>();
 

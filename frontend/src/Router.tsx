@@ -11,8 +11,6 @@ function Router() {
 
   const loggedIn = !!walletAddress;
 
-  console.log(loggedIn)
-
   return (
     <BrowserRouter>
       <Header />
