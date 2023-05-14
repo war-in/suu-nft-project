@@ -6,13 +6,13 @@ import "./Rank.sol";
 
 /**
  * @title Contract managing Rank contracts. Controlled by Admin contract.
- * @notice Here you can buy a rank.
+ * @notice Here you can buy a Rank.
  */
 contract Ranks is AccessControl {
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
 
     /**
-     * @notice Array containing addresses of the ranks. Cheapest rank is at index 0.
+     * @notice Array containing addresses of the Ranks. Cheapest Rank is at index 0.
      */
     address[] public ranks;
 

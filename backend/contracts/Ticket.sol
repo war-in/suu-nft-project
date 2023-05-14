@@ -4,18 +4,48 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
+import "./ranks/Rank.sol";
+import "./ranks/Ranks.sol";
 
+/**
+ * @title NFT contract selling tickets for events. Controlled by an Admin contract.
+ * @notice This is the ticket for your event.
+ */
 contract Ticket is ERC721, AccessControl {
     using Counters for Counters.Counter;
     Counters.Counter private currentTokenId;
 
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
 
-    address ranksAddress;
-    uint256[] saleStartTimePerRank;
-    uint8[] maxTicketsPerUserPerRank;
-    uint256[] ticketPricePerRank;
+    /**
+     * @notice Address of the Ranks contract which defines available Ranks for this contract.
+     */
+    address public ranksAddress;
+    /**
+     * @notice Defines when the sale starts for each Rank.
+     */
+    uint256[] public saleStartTimePerRank;
+    /**
+     * @notice Defines max amount of ticket per user with some Rank.
+     */
+    uint8[] public maxTicketsPerUserPerRank;
+    /**
+     * @notice Defines price of the ticket per Rank.
+     */
+    uint256[] public ticketPricePerRank;
 
+    /**
+     * @notice Creates a Ticket contract instance.
+     * @param name The name of the event.
+     * @param symbol Symbol of the NFT contract.
+     * @param ranksAddress_ Address of the Ranks contract which defines available Ranks for an event.
+     * @param saleStartTimePerRank_ Array defining when the sale starts for each Rank.
+     * Open sale date is at index 0.
+     * @param maxTicketsPerUserPerRank_ Array defining max amount of ticket per user with some Rank.
+     * Amount for users without a Rank is at index 0.
+     * @param ticketPricePerRank_ Array defining price of the ticket per Rank.
+     * Price for users without Rank is at index 0.
+     */
     constructor(
         string memory name,
         string memory symbol,
@@ -32,17 +62,32 @@ contract Ticket is ERC721, AccessControl {
         ticketPricePerRank = ticketPricePerRank_;
     }
 
-    function mintTo(address recipient) public returns (uint256) {
-        require(hasRole(ADMIN_ROLE, msg.sender), "Caller is not an admin");
+    /**
+     * @notice Call this function to buy some tickets.
+     * @param amount Number of tickets to buy.
+     */
+    function buy(uint amount) external payable {
+        Ranks ranks = Ranks(ranksAddress);
+        int rankId = ranks.getCurrentRank(msg.sender);
 
-        currentTokenId.increment();
-        uint256 newItemId = currentTokenId.current();
-        _safeMint(recipient, newItemId);
-        return newItemId;
-    }
+        require(
+            block.timestamp >= saleStartTimePerRank[rankId + 1],
+            "Sale does not started for your Rank yet!"
+        );
+        require(
+            amount <= maxTicketsPerUserPerRank[rankId + 1],
+            "You can't buy so many tickets witch your Rank."
+        );
+        require(
+            msg.value >= ticketPricePerRank[rankId + 1] * amount,
+            "Send more funds to buy those tickets."
+        );
 
-    function getRanksAddress() public view returns (address) {
-        return ranksAddress;
+        for (uint i = 0; i < amount; i++) {
+            currentTokenId.increment();
+            uint256 newItemId = currentTokenId.current();
+            _safeMint(recipient, newItemId);
+        }
     }
 
     function supportsInterface(
