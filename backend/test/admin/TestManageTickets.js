@@ -1,7 +1,7 @@
 const { expect } = require("chai");
 const { BN } = require("@openzeppelin/test-helpers");
 
-const ManageTickets = artifacts.require("Admin");
+const ManageTickets = artifacts.require("ManageTickets");
 const Ranks = artifacts.require("Ranks");
 
 contract("ManageTickets", function (accounts) {

@@ -40,9 +40,8 @@ contract Ranks is AccessControl {
 
     /**
      * @notice Buy your Rank here. Remember to approve this contract to be able to burn your old Rank.
-     * @return True if success.
      */
-    function buy() external payable returns (bool) {
+    function buy() external payable {
         int currentRankId = getCurrentRank(msg.sender);
         uint nextRankId = uint(currentRankId + 1);
 
@@ -62,8 +61,6 @@ contract Ranks is AccessControl {
             currentRank.burn(currentRank.ownerToToken(msg.sender));
         }
         nextRank.mintTo(msg.sender);
-
-        return true;
     }
 
     /**
