@@ -1,31 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import NoEthProvider from "../components/NoEthProvider";
 import { useEthereum } from "../EthereumContext";
 import { CenteredDiv } from "../styles";
 
-function HomeScreen() {
-  const { connectWallet, getWalletAddress } = useEthereum();
-  const [walletAddress, setWalletAddress] = useState("");
+interface Props {
+  walletAddress?: string;
+}
 
-  useEffect(() => {
-    const getAndSetWalletAddress = async () => {
-      const address = await getWalletAddress();
-      console.log(address);
-
-      setWalletAddress(address);
-    };
-    getAndSetWalletAddress();
-  });
+const HomeScreen: React.FC<Props> = ({ walletAddress }) => {
+  const { connectWallet } = useEthereum();
+  
 
   return (
     <CenteredDiv>
       {window.ethereum === undefined ? (
         <NoEthProvider />
       ) : (
-        <div>
+        <CenteredDiv>
           <button onClick={connectWallet}>Connect a wallet</button>
-          <p>Your wallet address {walletAddress}</p>
-        </div>
+          {!!walletAddress && <p>Your wallet address {walletAddress}</p>}
+        </CenteredDiv>
       )}
     </CenteredDiv>
   );

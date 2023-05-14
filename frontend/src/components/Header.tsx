@@ -1,13 +1,17 @@
 import React from "react";
 import { Link, useMatch } from "react-router-dom";
 import styled from "styled-components";
+import { useEthereum } from "../EthereumContext";
 
 function Header() {
-  const tabs = ["/home", "/admin", "/events"];
+  const { walletAddress } = useEthereum();
+
+  const walletConnectedTabs = walletAddress ? ["/admin", "/events"] : [];
+  const allTabs = ["/home", ...walletConnectedTabs];
 
   return (
     <StyledHeader>
-      {tabs.map((path) => {
+      {allTabs.map((path) => {
         return <NavEntry path={path} key={path} />;
       })}
     </StyledHeader>

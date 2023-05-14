@@ -1,9 +1,10 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, useState } from "react";
 import Web3 from "web3";
 
 interface EthActions {
+    walletAddress?: string;
     connectWallet: () => Promise<void>;
-    getWalletAddress: () => Promise<string>;
+    getWalletAddressAsync: () => Promise<string>;
 }
 
 interface Props {
@@ -17,22 +18,28 @@ export const EthereumContextProvider = ({children}: Props): JSX.Element => {
     //@ts-ignore
     const web3 = new Web3(ethereum);
 
+    const [walletAddress, setWalletAddress] = useState<string>();
+
     const connectWallet = async () => {
         try {
-            await ethereum.request({ method: "eth_requestAccounts"});
+            const res = await ethereum.request({ method: "eth_requestAccounts"});
+            if(res && Array.isArray(res)) {
+                setWalletAddress(res[0]);
+            }
         } catch(err) {
             console.warn(err);
         }
     }
 
-    const getWalletAddress = async () => {
+    const getWalletAddressAsync = async () => {
         const addresses = await web3.eth.getAccounts();
         return addresses[0];
     }
 
     const actions: EthActions = {
+        walletAddress,
         connectWallet,
-        getWalletAddress
+        getWalletAddressAsync
     }
 
     return (
