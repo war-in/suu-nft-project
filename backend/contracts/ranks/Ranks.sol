@@ -11,6 +11,9 @@ import "./Rank.sol";
 contract Ranks is AccessControl {
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
 
+    /**
+     * @notice Array containing addresses of the ranks. Cheapest rank is at index 0.
+    */
     address[] public ranks;
 
     /**
@@ -64,8 +67,9 @@ contract Ranks is AccessControl {
     }
 
     /**
-     * @notice Check which rank the user has.
-     * @return -1 if doesn't have a rank. Rank index otherwise.
+     * @notice Check user's rank.
+     * @param user Address of the user whose rank we want to check.
+     * @return -1 if user doesn't have a rank. Rank index otherwise.
      */
     function getCurrentRank(address user) public view returns (int) {
         for (uint i = 0; i < ranks.length; i++) {
