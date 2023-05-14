@@ -15,23 +15,24 @@ contract Ranks is AccessControl {
      * @notice Array containing addresses of the Ranks. Cheapest Rank is at index 0.
      */
     address[] public ranks;
+    uint8 public numberOfRanks;
 
     /**
      * @notice Creates a Ranks contract instance. All Rank contracts are created here.
-     * @param numberOfRanks Number of Rank contracts.
+     * @param numberOfRanks_ Number of Rank contracts.
      * @param ranksNames Array with name of each Rank.
      * @param ranksSymbols Array with symbol of each Rank.
      * @param ranksSymbols Array with price of each Rank.
      */
     constructor(
-        uint8 numberOfRanks,
+        uint8 numberOfRanks_,
         string[] memory ranksNames,
         string[] memory ranksSymbols,
         uint256[] memory ranksPrices
     ) {
         _grantRole(ADMIN_ROLE, msg.sender);
 
-        for (uint i = 0; i < numberOfRanks; i++) {
+        for (uint i = 0; i < numberOfRanks_; i++) {
             Rank rank = new Rank(
                 ranksNames[i],
                 ranksSymbols[i],
@@ -39,6 +40,7 @@ contract Ranks is AccessControl {
             );
             ranks.push(address(rank));
         }
+        numberOfRanks = numberOfRanks_;
     }
 
     /**
