@@ -13,7 +13,6 @@ contract ManageRanks is AccessControl {
         _grantRole(ADMIN_ROLE, msg.sender);
     }
 
-
     function createRanks(
         string memory name,
         uint8 numberOfRanks,
