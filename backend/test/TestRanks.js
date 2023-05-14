@@ -67,7 +67,7 @@ contract("Ranks", (accounts) => {
     );
   });
 
-  it("should get current rank rank", async () => {
+  it("should get current rank", async () => {
     await ranks.buy({ from: user1, value: 1 });
 
     let currentRank = await ranks.getCurrentRank(user1);

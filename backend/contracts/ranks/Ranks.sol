@@ -13,7 +13,7 @@ contract Ranks is AccessControl {
 
     /**
      * @notice Array containing addresses of the ranks. Cheapest rank is at index 0.
-    */
+     */
     address[] public ranks;
 
     /**
