@@ -23,30 +23,37 @@ contract("Ticket", function (accounts) {
       "Ticket",
       "TCK",
       ranks.address,
-      [new BN("2"), new BN("1")],
-      [1, 2],
-      [new BN("2"), new BN("1")],
+      [3, 2, 1],
+      [1, 2, 3],
+      [3, 2, 1],
       { from: admin_user }
     );
   });
 
   it("should return ranks address", async () => {
-    const ranksAddress = await ticket.getRanksAddress();
+    const ranksAddress = await ticket.ranksAddress();
 
     expect(ranksAddress).to.equal(ranks.address);
   });
 
-  it("should mint new tokens", async () => {
-    await ticket.mintTo(user, { from: admin_user });
+  it("should sell new tokens", async () => {
+    await ticket.buy(1, { from: user, value: 3 });
 
     const owner = await ticket.ownerOf(1);
     expect(owner).to.be.equal(user);
   });
 
-  it("should not allow non-admin to mint new tokens", async () => {
+  it("should throw on too high amount", async () => {
     await expectRevert(
-      ticket.mintTo(user, { from: user }),
-      "Caller is not an admin"
+      ticket.buy(2, { from: user }),
+      "You can't buy so many tickets with your Rank."
+    );
+
+    await ticket.buy(1, { from: user, value: 3 });
+
+    await expectRevert(
+      ticket.buy(1, { from: user }),
+      "You can't buy so many tickets with your Rank."
     );
   });
 });

@@ -30,9 +30,9 @@ contract("ManageTickets", function (accounts) {
     );
     const ranksAddress = ranks.address;
 
-    const saleStartTimePerRank = [0, 1, 2];
-    const maxTicketsPerUserPerRank = [1, 2, 3];
-    const ticketPricePerRank = [new BN("4"), new BN("5"), new BN("6")];
+    const saleStartTimePerRank = [4, 3, 2, 1];
+    const maxTicketsPerUserPerRank = [1, 2, 3, 4];
+    const ticketPricePerRank = [4, 3, 2, 1];
 
     await manageTickets.createTicketContract(
       ticketName,
@@ -44,9 +44,7 @@ contract("ManageTickets", function (accounts) {
       { from: admin_user }
     );
 
-    const ticketAddress = await manageTickets.getTicketAddressByName(
-      ticketName
-    );
+    const ticketAddress = await manageTickets.ticketsByName(ticketName);
 
     expect(ticketAddress).to.not.equal(
       "0x0000000000000000000000000000000000000000"
