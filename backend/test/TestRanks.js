@@ -7,7 +7,7 @@ const Rank = artifacts.require("Rank");
 contract("Ranks", (accounts) => {
   let ranks;
 
-  const [admin, user1, user2] = accounts;
+  const [admin, user1] = accounts;
   const numberOfRanks = 3;
   const ranksNames = ["Rank 1", "Rank 2", "Rank 3"];
   const ranksSymbols = ["R1", "R2", "R3"];
