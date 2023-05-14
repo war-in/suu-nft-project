@@ -17,7 +17,7 @@ contract("ManageRanks", function (accounts) {
     const numberOfRanks = 3;
     const ranksNames = ["Rank 1", "Rank 2", "Rank 3"];
     const ranksSymbols = ["R1", "R2", "R3"];
-    const ranksPrices = [new BN("1"), new BN("2"), new BN("3")];
+    const ranksPrices = [1, 2, 3];
 
     await manageRanks.createRanks(
       name,
@@ -43,7 +43,7 @@ contract("ManageRanks", function (accounts) {
     const numberOfRanks = 3;
     const ranksNames = ["Rank 1", "Rank 2", "Rank 3"];
     const ranksSymbols = ["R1", "R2", "R3"];
-    const ranksPrices = [new BN("1"), new BN("2"), new BN("3")];
+    const ranksPrices = [1, 2, 3];
 
     await manageRanks.createRanks(
       name,
