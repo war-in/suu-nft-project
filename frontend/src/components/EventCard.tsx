@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { Event } from "../screens/AdminPanel";
+import { Event } from "../screens/AdminEventsPanel";
 import { getDateFormated } from "../utils/date";
 
 type Props = {

@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import EventCard from "../components/EventCard";
 import { CenteredDiv } from "../styles";
-import { Event } from "./AdminPanel";
+import { Event } from "./AdminEventsPanel";
 
 const events: Event[] = [
   {

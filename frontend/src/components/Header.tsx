@@ -9,7 +9,7 @@ function Header() {
   const customerTabs = walletAddress ? ["/events"] : [];
   const adminTabs =
     walletAddress === process.env.REACT_APP_ADMIN_WALLET_ADDRESS
-      ? ["/admin"]
+      ? ["/create-ranks", "/create-event"]
       : [];
   const allTabs = ["/home", ...adminTabs, ...customerTabs];
 

@@ -8,8 +8,7 @@ interface Props {
 }
 
 const HomeScreen: React.FC<Props> = ({ walletAddress }) => {
-  const { connectWallet, testContractInteraction } = useEthereum();
-  
+  const { connectWallet } = useEthereum();
 
   return (
     <CenteredDiv>
@@ -18,12 +17,11 @@ const HomeScreen: React.FC<Props> = ({ walletAddress }) => {
       ) : (
         <CenteredDiv>
           <button onClick={connectWallet}>Connect a wallet</button>
-          <button onClick={testContractInteraction}>Click me</button>
           {!!walletAddress && <p>Your wallet address {walletAddress}</p>}
         </CenteredDiv>
       )}
     </CenteredDiv>
   );
-}
+};
 
 export default HomeScreen;

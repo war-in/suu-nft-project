@@ -1,6 +1,8 @@
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
 import { CenteredDiv, StyledButton } from "../styles";
+import { useEthereum } from "../EthereumContext";
+import { useEffect, useState } from "react";
 
 type FormInputs = {
   eventName: string;
@@ -16,13 +18,26 @@ export interface Event {
   ticketsNumber: number;
 }
 
-function AdminPanel() {
+function AdminEventsPanel() {
+  const [rankGroups, setRankGroups] = useState<string[]>();
+
   const { register, handleSubmit } = useForm<FormInputs>();
+  const { fetchRanksNames } = useEthereum();
 
   const createEvent = async (event: Event) => {
     // TODO send request
     console.log(event);
   };
+
+  useEffect(() => {
+    const fetchRankGroupsAsync = async () => {
+      const res = await fetchRanksNames();
+
+      setRankGroups(res);
+    };
+
+    fetchRankGroupsAsync();
+  }, []);
 
   const onSubmit = handleSubmit(
     async ({ eventName, eventDescription, eventDate, eventTicketsNumber }) => {
@@ -109,4 +124,4 @@ const StyledInput = styled.input`
   }
 `;
 
-export default AdminPanel;
+export default AdminEventsPanel;
