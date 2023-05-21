@@ -2,6 +2,8 @@ FROM node:20 AS web
 
 WORKDIR /home/app
 
+ENV GENERATE_SOURCEMAP false
+
 COPY package.json /home/app
 COPY package-lock.json /home/app
 COPY tsconfig.json /home/app

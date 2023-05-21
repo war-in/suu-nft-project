@@ -4,7 +4,7 @@ services:
       context: ./backend
       target: ganache
     ports:
-      - 8545:8545
+      - 7545:8545
     networks:
       - backend
 
