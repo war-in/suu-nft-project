@@ -6,8 +6,12 @@ import { useEthereum } from "../EthereumContext";
 function Header() {
   const { walletAddress } = useEthereum();
 
-  const walletConnectedTabs = walletAddress ? ["/admin", "/events"] : [];
-  const allTabs = ["/home", ...walletConnectedTabs];
+  const customerTabs = walletAddress ? ["/events"] : [];
+  const adminTabs =
+    walletAddress === process.env.REACT_APP_ADMIN_WALLET_ADDRESS
+      ? ["/admin"]
+      : [];
+  const allTabs = ["/home", ...adminTabs, ...customerTabs];
 
   return (
     <StyledHeader>

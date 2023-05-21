@@ -16,12 +16,19 @@ function Router() {
       <Header />
       <Routes>
         <Route path="/" element={<HomePage walletAddress={walletAddress} />} />
-        <Route path="/home" element={<HomePage walletAddress={walletAddress} />} />
-        {loggedIn && <>
+        <Route
+          path="/home"
+          element={<HomePage walletAddress={walletAddress} />}
+        />
+        {walletAddress === process.env.REACT_APP_ADMIN_WALLET_ADDRESS && (
           <Route path="/admin" element={<AdminPanel />} />
-          <Route path="/events" element={<EventsPage />} />
-          <Route path="/event-details" element={<EventDetails />} />
-        </>}
+        )}
+        {loggedIn && (
+          <>
+            <Route path="/events" element={<EventsPage />} />
+            <Route path="/event-details" element={<EventDetails />} />
+          </>
+        )}
       </Routes>
     </BrowserRouter>
   );
