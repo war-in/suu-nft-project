@@ -15,9 +15,9 @@ contract ManageRanks is AccessControl {
      */
     mapping(string => address) public ranksByName;
     /**
-     * @notice Array containing names of all Ranks contracts.
+     * @dev Array containing names of all Ranks contracts.
      */
-    string[] public allRanksNames;
+    string[] private allRanksNames;
 
     constructor() {
         _grantRole(ADMIN_ROLE, msg.sender);

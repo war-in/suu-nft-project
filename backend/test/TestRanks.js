@@ -74,4 +74,10 @@ contract("Ranks", (accounts) => {
 
     expect(currentRank).to.be.bignumber.equal(BN(0));
   });
+
+  it("should return number of ranks", async () => {
+    let numberOfRanks = await ranks.numberOfRanks();
+
+    expect(numberOfRanks).to.be.bignumber.equal(BN(3));
+  });
 });
