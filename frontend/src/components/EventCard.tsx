@@ -8,6 +8,8 @@ type Props = {
   event: Event;
 };
 
+// TODO: Display info about ranks here
+
 function EventCard(props: Props) {
   const navigate = useNavigate();
 

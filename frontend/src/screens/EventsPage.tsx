@@ -10,12 +10,14 @@ const events: Event[] = [
     description: "Opis 1",
     date: new Date().toISOString(),
     ticketsNumber: 1000,
+    ranksGroup: "mock",
   },
   {
     name: "Koncert 2",
     description: "Opis 2",
     date: new Date().toISOString(),
     ticketsNumber: 500,
+    ranksGroup: "mock",
   },
 ];
 

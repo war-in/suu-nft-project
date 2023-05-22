@@ -7,6 +7,7 @@ interface EthActions {
   connectWallet: () => Promise<void>;
   createRanks: (params: CreateRanksRequest) => Promise<void>;
   fetchRanksNames: () => Promise<string[]>;
+  getRanksContractAddress: (name: string) => Promise<string>;
   getWalletAddressAsync: () => Promise<string>;
 }
 
@@ -53,7 +54,6 @@ export const EthereumContextProvider = ({ children }: Props): JSX.Element => {
       const result = await contracts.ranksAdmin.methods
         .getAllRanksNames()
         .call({ from: walletAddress });
-      console.log(result);
       return result;
     } catch (err) {
       console.warn(err);
@@ -70,10 +70,18 @@ export const EthereumContextProvider = ({ children }: Props): JSX.Element => {
           params.ranksSymbols,
           params.ranksPrices
         )
-        .call({ from: walletAddress });
+        .send({ from: walletAddress, gas: 5000000 });
     } catch (err) {
       console.warn(err);
     }
+  };
+
+  const getRanksContractAddress = async (name: string) => {
+    const address = await contracts.ranksAdmin.methods
+      .ranksByName(name)
+      .call({ from: walletAddress });
+
+    return address;
   };
 
   const actions: EthActions = {
@@ -81,6 +89,7 @@ export const EthereumContextProvider = ({ children }: Props): JSX.Element => {
     connectWallet,
     createRanks,
     fetchRanksNames,
+    getRanksContractAddress,
     getWalletAddressAsync,
   };
 

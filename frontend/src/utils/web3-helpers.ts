@@ -10,9 +10,12 @@ import TicketsAdminContract from "contracts/ManageTickets.json";
 export interface Contracts {
   rankContract: Contract;
   ranksAdmin: Contract;
-  ranksContract: Contract;
   ticketContract: Contract;
   ticketsAdmin: Contract;
+}
+
+export enum DynamicContracts {
+  RANKS = "ranks",
 }
 
 const ethereum = window.ethereum;
@@ -27,12 +30,25 @@ export const asciiToHex = (value: string) => {
   return web3.utils.asciiToHex(value);
 };
 
+export const createContract = (
+  contractType: DynamicContracts,
+  address: string
+) => {
+  switch (contractType) {
+    case DynamicContracts.RANKS:
+      const formattedRanksContract = formatContract(RanksContract);
+      const ranksContract = new Contract(formattedRanksContract.abi, address);
+      return ranksContract;
+    default:
+      throw new Error("Contract type not implemented!");
+  }
+};
+
 export const setupContracts = (): Contracts => {
   Contract.setProvider(process.env.REACT_APP_CONTRACT_PROVIDER_URL!);
 
   const formattedRankContract = formatContract(RankContract);
   const formattedRanksAdminContract = formatContract(RanksAdminContract);
-  const formattedRanksContract = formatContract(RanksContract);
   const formattedTicketContract = formatContract(TicketContract);
   const formattedTicketsAdminContract = formatContract(TicketsAdminContract);
 
@@ -43,10 +59,6 @@ export const setupContracts = (): Contracts => {
   const ranksAdmin = new Contract(
     formattedRanksAdminContract.abi,
     process.env.REACT_APP_MANAGE_RANKS_CONTRACT_ADDRESS
-  );
-  const ranksContract = new Contract(
-    formattedRanksContract.abi,
-    process.env.REACT_APP_RANKS_CONTRACT_ADDRESS
   );
   const ticketContract = new Contract(
     formattedTicketContract.abi,
@@ -60,7 +72,6 @@ export const setupContracts = (): Contracts => {
   return {
     rankContract,
     ranksAdmin,
-    ranksContract,
     ticketContract,
     ticketsAdmin,
   };
