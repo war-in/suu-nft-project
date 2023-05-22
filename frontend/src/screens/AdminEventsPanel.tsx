@@ -43,13 +43,7 @@ function AdminEventsPanel() {
   };
 
   useEffect(() => {
-    const fetchRankGroupsAsync = async () => {
-      const res = await fetchRanksNames();
-
-      setRanksGroups(res);
-    };
-
-    fetchRankGroupsAsync();
+    fetchRanksNames().then((names) => setRanksGroups(names));
   }, []);
 
   const onSubmit = handleSubmit(

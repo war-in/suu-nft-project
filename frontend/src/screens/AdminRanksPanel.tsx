@@ -4,9 +4,12 @@ import { CenteredDiv, StyledButton } from "../styles";
 import { useEthereum } from "../EthereumContext";
 import { useState } from "react";
 
-type FormInputs = {
-  [key: string]: any; /// I need repeatable keys
-};
+export interface FormInputs {
+  contract: string;
+  ranksNumber: number;
+  [key: `rankName${number}` | `rankSymbol${number}`]: string;
+  [key: `rankPrice${number}`]: number;
+}
 
 function AdminRanksPanel() {
   const [numberOfRanks, setNumberOfRanks] = useState<number>(0);
@@ -28,6 +31,7 @@ function AdminRanksPanel() {
 
     Object.keys(values).forEach((key) => {
       const index = +key.match(/\d+/)!;
+      //@ts-ignore
       const value = values[key];
 
       if (key.includes("rankName")) {

@@ -22,7 +22,7 @@ const ethereum = window.ethereum;
 //@ts-ignore
 const web3 = new Web3(ethereum);
 
-const formatContract = (contract: { [key: string]: any }) => {
+const formatContract = (contract: Record<string, unknown>) => {
   return JSON.parse(JSON.stringify(contract));
 };
 
