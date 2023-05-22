@@ -7,7 +7,7 @@ contract ManageTickets is AccessControl {
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
 
     /**
-     * @notice To get Ticket contract address pass it's name.
+     * @notice To get Ticket contract address by it's name.
      */
     mapping(string => address) public ticketsByName;
     /**

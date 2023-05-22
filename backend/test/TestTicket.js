@@ -9,7 +9,7 @@ contract("Ticket", function (accounts) {
   let ticket;
   let ranks;
 
-  const [admin_user, user1, user2] = accounts;
+  const [adminUser, user1, user2] = accounts;
 
   beforeEach(async () => {
     ranks = await Ranks.new(
@@ -17,7 +17,7 @@ contract("Ticket", function (accounts) {
       ["Rank 1", "Rank 2"],
       ["R1", "R2"],
       [new BN("1"), new BN("2")],
-      { from: admin_user }
+      { from: adminUser }
     );
 
     ticket = await Ticket.new(
@@ -27,7 +27,7 @@ contract("Ticket", function (accounts) {
       [3, 2, 1],
       [1, 2, 3],
       [3, 2, 1],
-      { from: admin_user }
+      { from: adminUser }
     );
   });
 
@@ -44,7 +44,7 @@ contract("Ticket", function (accounts) {
     expect(owner).to.be.equal(user1);
   });
 
-  it("should throw on too high amount", async () => {
+  it("should throw on too high amount of tickets for too low rank", async () => {
     await expectRevert(
       ticket.buy(2, { from: user1 }),
       "You can't buy so many tickets with your Rank."
@@ -80,7 +80,7 @@ contract("Ticket", function (accounts) {
     await ticket.buy(3, { from: user2, value: 10 });
 
     await expectRevert(
-      ticket.buy(2, { from: admin_user, value: 10 }),
+      ticket.buy(2, { from: adminUser, value: 10 }),
       "You can't buy so many tickets with your Rank."
     );
   });

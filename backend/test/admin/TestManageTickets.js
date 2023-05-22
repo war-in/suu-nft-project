@@ -7,10 +7,10 @@ const Ranks = artifacts.require("Ranks");
 contract("ManageTickets", function (accounts) {
   let manageTickets;
 
-  const [admin_user] = accounts;
+  const [adminUser] = accounts;
 
   beforeEach(async () => {
-    manageTickets = await ManageTickets.new({ from: admin_user });
+    manageTickets = await ManageTickets.new({ from: adminUser });
   });
 
   it("should create ticket contract", async () => {
@@ -26,7 +26,7 @@ contract("ManageTickets", function (accounts) {
       ranksNames,
       ranksSymbols,
       ranksPrices,
-      { from: admin_user }
+      { from: adminUser }
     );
     const ranksAddress = ranks.address;
 
@@ -41,7 +41,7 @@ contract("ManageTickets", function (accounts) {
       saleStartTimePerRank,
       maxTicketsPerUserPerRank,
       ticketPricePerRank,
-      { from: admin_user }
+      { from: adminUser }
     );
 
     const ticketAddress = await manageTickets.ticketsByName(ticketName);
@@ -64,7 +64,7 @@ contract("ManageTickets", function (accounts) {
       ranksNames,
       ranksSymbols,
       ranksPrices,
-      { from: admin_user }
+      { from: adminUser }
     );
     const ranksAddress = ranks.address;
 
@@ -79,7 +79,7 @@ contract("ManageTickets", function (accounts) {
       saleStartTimePerRank,
       maxTicketsPerUserPerRank,
       ticketPricePerRank,
-      { from: admin_user }
+      { from: adminUser }
     );
 
     await expectRevert(
@@ -90,7 +90,7 @@ contract("ManageTickets", function (accounts) {
         saleStartTimePerRank,
         maxTicketsPerUserPerRank,
         ticketPricePerRank,
-        { from: admin_user }
+        { from: adminUser }
       ),
       "Ticket contract with this name already exists!"
     );

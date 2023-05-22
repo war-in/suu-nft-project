@@ -81,7 +81,7 @@ contract Ticket is ERC721, AccessControl {
 
         require(
             block.timestamp >= saleStartTimePerRank[rankId],
-            "Sale does not started for your Rank yet!"
+            "Sale haven't started for your Rank yet!"
         );
         require(
             amount <= maxTicketsPerUserPerRank[rankId] - balanceOf(msg.sender),

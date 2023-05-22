@@ -6,10 +6,10 @@ const ManageRanks = artifacts.require("ManageRanks");
 contract("ManageRanks", function (accounts) {
   let manageRanks;
 
-  const [admin_user] = accounts;
+  const [adminUser] = accounts;
 
   beforeEach(async () => {
-    manageRanks = await ManageRanks.new({ from: admin_user });
+    manageRanks = await ManageRanks.new({ from: adminUser });
   });
 
   it("should create ranks", async () => {
@@ -25,7 +25,7 @@ contract("ManageRanks", function (accounts) {
       ranksNames,
       ranksSymbols,
       ranksPrices,
-      { from: admin_user }
+      { from: adminUser }
     );
 
     const allRanks = await manageRanks.getAllRanksNames();
@@ -51,7 +51,7 @@ contract("ManageRanks", function (accounts) {
       ranksNames,
       ranksSymbols,
       ranksPrices,
-      { from: admin_user }
+      { from: adminUser }
     );
 
     await expectRevert(
@@ -61,7 +61,7 @@ contract("ManageRanks", function (accounts) {
         ranksNames,
         ranksSymbols,
         ranksPrices,
-        { from: admin_user }
+        { from: adminUser }
       ),
       "Ranks contract with this name already exists!"
     );
