@@ -1,17 +1,13 @@
 FROM node:20 AS web
 
-WORKDIR /home/app
-
 ENV GENERATE_SOURCEMAP false
 
-COPY package.json /home/app
-COPY package-lock.json /home/app
-COPY tsconfig.json /home/app
-COPY public /home/app/public/
-COPY src /home/app/src/
+WORKDIR /home/app
+RUN mkdir /home/app/backend
+RUN mkdir /home/app/backend/build
 
+COPY . .
 RUN npm install
 
 EXPOSE 3000
-
 ENTRYPOINT [ "npm", "run", "start" ]
