@@ -1,8 +1,12 @@
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
 import { CenteredDiv, StyledButton } from "../styles";
+import { useEthereum } from "../EthereumContext";
+import { useEffect, useState } from "react";
+import { DynamicContracts, createContract } from "../utils/web3-helpers";
 
 type FormInputs = {
+  ranksGroup: string;
   eventName: string;
   eventDescription: string;
   eventDate: string;
@@ -10,23 +14,48 @@ type FormInputs = {
 };
 
 export interface Event {
+  ranksGroup: string;
   name: string;
   description: string;
   date: string;
   ticketsNumber: number;
 }
 
-function AdminPanel() {
+function AdminEventsPanel() {
+  const [ranksGroups, setRanksGroups] = useState<string[]>();
+
   const { register, handleSubmit } = useForm<FormInputs>();
+  const { fetchRanksNames, getRanksContractAddress } = useEthereum();
 
   const createEvent = async (event: Event) => {
-    // TODO send request
-    console.log(event);
+    const ranksContractAddress = await getRanksContractAddress(
+      event.ranksGroup
+    );
+
+    console.log(ranksContractAddress);
+
+    const ranksContract = createContract(
+      DynamicContracts.RANKS,
+      ranksContractAddress
+    );
+
+    console.log(ranksContract);
   };
 
+  useEffect(() => {
+    fetchRanksNames().then((names) => setRanksGroups(names));
+  }, []);
+
   const onSubmit = handleSubmit(
-    async ({ eventName, eventDescription, eventDate, eventTicketsNumber }) => {
+    async ({
+      eventName,
+      eventDescription,
+      eventDate,
+      eventTicketsNumber,
+      ranksGroup,
+    }) => {
       const event: Event = {
+        ranksGroup,
         name: eventName,
         description: eventDescription,
         date: new Date(eventDate).toISOString(),
@@ -40,6 +69,17 @@ function AdminPanel() {
   return (
     <CenteredDiv>
       <StyledForm onSubmit={onSubmit}>
+        <LabelText htmlFor="ranksGroup">Ranks group</LabelText>
+        <StyledSelect
+          className="form-control"
+          {...register("ranksGroup", { required: true })}
+        >
+          {ranksGroups?.map((group, index) => (
+            <option key={index} value={group}>
+              {group}
+            </option>
+          ))}
+        </StyledSelect>
         <LabelText htmlFor="eventName">Event name</LabelText>
         <StyledInput
           type="text"
@@ -109,4 +149,25 @@ const StyledInput = styled.input`
   }
 `;
 
-export default AdminPanel;
+const StyledSelect = styled.select`
+  background-color: #a39171;
+  padding: 1rem 5rem;
+  border-radius: 2rem;
+  border-color: #a39171;
+  color: white;
+  &:focus::-webkit-datetime-edit {
+    color: black;
+  }
+  ::placeholder {
+    color: white;
+    text-align: center;
+  }
+  ::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+  }
+  ::-webkit-datetime-edit {
+    color: white;
+  }
+`;
+
+export default AdminEventsPanel;

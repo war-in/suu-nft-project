@@ -15,9 +15,9 @@ contract ManageRanks is AccessControl {
      */
     mapping(string => address) public ranksByName;
     /**
-     * @notice Array containing names of all Ranks contracts.
+     * @dev Array containing names of all Ranks contracts.
      */
-    string[] public allRanksNames;
+    string[] private allRanksNames;
 
     constructor() {
         _grantRole(ADMIN_ROLE, msg.sender);
@@ -29,7 +29,7 @@ contract ManageRanks is AccessControl {
      * @param numberOfRanks Number of Rank contracts.
      * @param ranksNames Array with name of each Rank.
      * @param ranksSymbols Array with symbol of each Rank.
-     * @param ranksSymbols Array with price of each Rank.
+     * @param ranksPrices Array with price of each Rank.
      */
     function createRanks(
         string memory name,
