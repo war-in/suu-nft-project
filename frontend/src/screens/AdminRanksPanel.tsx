@@ -13,14 +13,12 @@ export interface FormInputs {
 
 function AdminRanksPanel() {
   const [numberOfRanks, setNumberOfRanks] = useState<number>(0);
-  const [contractName, setContractName] = useState("");
 
   const { createRanks } = useEthereum();
 
   const { register, handleSubmit, reset } = useForm<FormInputs>();
 
-  const showRanksForm = handleSubmit(({ ranksNumber, contract }) => {
-    setContractName(contract);
+  const showRanksForm = handleSubmit(({ ranksNumber }) => {
     setNumberOfRanks(+ranksNumber);
   });
 
@@ -47,7 +45,7 @@ function AdminRanksPanel() {
 
     await createRanks({
       name: values.contract,
-      numberOfRanks: values.ranksNumber,
+      numberOfRanks,
       ranksNames,
       ranksSymbols,
       ranksPrices,
