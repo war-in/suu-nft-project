@@ -46,8 +46,8 @@ function AdminRanksPanel() {
     reset();
 
     await createRanks({
-      name: contractName,
-      numberOfRanks,
+      name: values.contract,
+      numberOfRanks: values.ranksNumber,
       ranksNames,
       ranksSymbols,
       ranksPrices,
