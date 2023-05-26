@@ -1,16 +1,17 @@
 import Web3 from "web3";
 import Contract from "web3-eth-contract";
 
-import RankContract from "contracts/Rank.json";
 import RanksAdminContract from "contracts/ManageRanks.json";
 import RanksContract from "contracts/Ranks.json";
-import TicketContract from "contracts/Ticket.json";
 import TicketsAdminContract from "contracts/ManageTickets.json";
+import {
+  CONTRACT_PROVIDER_URL,
+  MANAGE_RANKS_CONTRACT_ADDRESS,
+  MANAGE_TICKETS_CONTRACT_ADDRESS,
+} from "./config";
 
 export interface Contracts {
-  rankContract: Contract;
   ranksAdmin: Contract;
-  ticketContract: Contract;
   ticketsAdmin: Contract;
 }
 
@@ -45,34 +46,22 @@ export const createContract = (
 };
 
 export const setupContracts = (): Contracts => {
-  Contract.setProvider(process.env.REACT_APP_CONTRACT_PROVIDER_URL!);
+  Contract.setProvider(CONTRACT_PROVIDER_URL);
 
-  const formattedRankContract = formatContract(RankContract);
   const formattedRanksAdminContract = formatContract(RanksAdminContract);
-  const formattedTicketContract = formatContract(TicketContract);
   const formattedTicketsAdminContract = formatContract(TicketsAdminContract);
 
-  const rankContract = new Contract(
-    formattedRankContract.abi,
-    process.env.REACT_APP_RANK_CONTRACT_ADDRESS
-  );
   const ranksAdmin = new Contract(
     formattedRanksAdminContract.abi,
-    process.env.REACT_APP_MANAGE_RANKS_CONTRACT_ADDRESS
-  );
-  const ticketContract = new Contract(
-    formattedTicketContract.abi,
-    process.env.REACT_APP_TICKET_CONTRACT_ADDRESS
+    MANAGE_RANKS_CONTRACT_ADDRESS
   );
   const ticketsAdmin = new Contract(
     formattedTicketsAdminContract.abi,
-    process.env.REACT_APP_MANAGE_TICKETS_CONTRACT_ADDRESS
+    MANAGE_TICKETS_CONTRACT_ADDRESS
   );
 
   return {
-    rankContract,
     ranksAdmin,
-    ticketContract,
     ticketsAdmin,
   };
 };

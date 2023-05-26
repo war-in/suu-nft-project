@@ -6,6 +6,7 @@ import EventDetails from "./screens/EventDetails";
 import EventsPage from "./screens/EventsPage";
 import HomePage from "./screens/HomePage";
 import { useEthereum } from "./EthereumContext";
+import { ADMIN_WALLET_ADDRESS } from "./utils/config";
 
 function Router() {
   const connector = useEthereum();
@@ -24,8 +25,7 @@ function Router() {
           path="/home"
           element={<HomePage walletAddress={connector.walletAddress} />}
         />
-        {connector.walletAddress ===
-          process.env.REACT_APP_ADMIN_WALLET_ADDRESS && (
+        {connector.walletAddress === ADMIN_WALLET_ADDRESS && (
           <>
             <Route path="/create-ranks" element={<AdminRanksPanel />} />
             <Route path="/create-event" element={<AdminEventsPanel />} />

@@ -2,13 +2,14 @@ import React from "react";
 import { Link, useMatch } from "react-router-dom";
 import styled from "styled-components";
 import { useEthereum } from "../EthereumContext";
+import { ADMIN_WALLET_ADDRESS } from "../utils/config";
 
 function Header() {
   const { walletAddress } = useEthereum();
 
   const customerTabs = walletAddress ? ["/events"] : [];
   const adminTabs =
-    walletAddress === process.env.REACT_APP_ADMIN_WALLET_ADDRESS
+    walletAddress === ADMIN_WALLET_ADDRESS
       ? ["/create-ranks", "/create-event"]
       : [];
   const allTabs = ["/home", ...adminTabs, ...customerTabs];
