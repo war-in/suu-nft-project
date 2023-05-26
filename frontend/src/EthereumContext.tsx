@@ -62,16 +62,6 @@ export const EthereumContextProvider = ({ children }: Props): JSX.Element => {
 
   const createRanks = async (params: CreateRanksRequest) => {
     try {
-      const gas = await contracts.ranksAdmin.methods
-        .createRanks(
-          params.name,
-          params.numberOfRanks,
-          params.ranksNames,
-          params.ranksSymbols,
-          params.ranksPrices
-        )
-        .estimateGas({ from: walletAddress });
-      console.log(gas);
       await contracts.ranksAdmin.methods
         .createRanks(
           params.name,
