@@ -29,7 +29,7 @@ contract ManageRanks is AccessControl {
      * @param numberOfRanks Number of Rank contracts.
      * @param ranksNames Array with name of each Rank.
      * @param ranksSymbols Array with symbol of each Rank.
-     * @param ranksSymbols Array with price of each Rank.
+     * @param ranksPrices Array with price of each Rank.
      */
     function createRanks(
         string memory name,
