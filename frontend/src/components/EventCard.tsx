@@ -26,10 +26,6 @@ function EventCard(props: Props) {
         0,
         8
       )}...`}</StyledText>
-      {/* <StyledDate> TOOD: USE PROPER DATES FROM ARRAY
-        Date: <br />
-        {getDateFormated(new Date(props.event.date))}
-      </StyledDate> */}
     </VerticalContainer>
   );
 }
