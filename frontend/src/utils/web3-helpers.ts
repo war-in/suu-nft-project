@@ -4,6 +4,7 @@ import Contract from "web3-eth-contract";
 import RanksAdminContract from "contracts/ManageRanks.json";
 import RanksContract from "contracts/Ranks.json";
 import TicketsAdminContract from "contracts/ManageTickets.json";
+import TicketContract from "contracts/Ticket.json";
 import {
   CONTRACT_PROVIDER_URL,
   MANAGE_RANKS_CONTRACT_ADDRESS,
@@ -17,6 +18,7 @@ export interface Contracts {
 
 export enum DynamicContracts {
   RANKS = "ranks",
+  EVENT = "event",
 }
 
 const ethereum = window.ethereum;
@@ -40,6 +42,10 @@ export const createContract = (
       const formattedRanksContract = formatContract(RanksContract);
       const ranksContract = new Contract(formattedRanksContract.abi, address);
       return ranksContract;
+    case DynamicContracts.EVENT:
+      const formattedTicketContract = formatContract(TicketContract);
+      const ticketContract = new Contract(formattedTicketContract.abi, address);
+      return ticketContract;
     default:
       throw new Error("Contract type not implemented!");
   }

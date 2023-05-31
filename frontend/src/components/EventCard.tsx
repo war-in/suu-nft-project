@@ -2,7 +2,6 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Event } from "../screens/AdminEventsPanel";
-import { getDateFormated } from "../utils/date";
 
 type Props = {
   event: Event;
@@ -12,6 +11,8 @@ type Props = {
 
 function EventCard(props: Props) {
   const navigate = useNavigate();
+
+  console.log(props.event);
 
   const onClick = () => {
     navigate("/event-details", {
@@ -23,11 +24,16 @@ function EventCard(props: Props) {
 
   return (
     <VerticalContainer onClick={onClick}>
-      <StyledName>{props.event.name}</StyledName>
-      <StyledDate>
+      <StyledName>{`name: ${props.event.name}`}</StyledName>
+      <StyledText>{`symbol: ${props.event.symbol}`}</StyledText>
+      <StyledText>{`ranks: ${props.event.ranksAddress.substring(
+        0,
+        8
+      )}...`}</StyledText>
+      {/* <StyledDate> TOOD: USE PROPER DATES FROM ARRAY
         Date: <br />
         {getDateFormated(new Date(props.event.date))}
-      </StyledDate>
+      </StyledDate> */}
     </VerticalContainer>
   );
 }
@@ -41,7 +47,7 @@ const VerticalContainer = styled.div`
   background-color: #6d4c3d;
   border-radius: 0.7rem;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: space-around;
   align-items: center;
   cursor: pointer;
 `;
@@ -50,6 +56,13 @@ const StyledName = styled.div`
   font-size: 25px;
   font-weight: bold;
   color: white;
+  text-align: center;
+`;
+
+const StyledText = styled.div`
+  font-size: 20px;
+  font-weight: 400;
+  color: #bbb;
   text-align: center;
 `;
 
