@@ -102,13 +102,13 @@ export const EthereumContextProvider = ({ children }: Props): JSX.Element => {
             .ranksAddress()
             .call({ from: walletAddress });
           const saleStartTimePerRank = await eventContract.methods
-            .saleStartTimePerRank(0) /// TODO: FETCH WHOLE ARRAY HERE, INVESTIGATE WHY INDEX MUST BE PROVIDED!!!
+            .getSaleStartTimePerRank() /// TODO: FETCH WHOLE ARRAY HERE, INVESTIGATE WHY INDEX MUST BE PROVIDED!!!
             .call({ from: walletAddress });
           const maxTicketsPerUserPerRank = await eventContract.methods
-            .maxTicketsPerUserPerRank(0)
+            .getMaxTicketsPerUserPerRank()
             .call({ from: walletAddress });
           const ticketPricePerRank = await eventContract.methods
-            .ticketPricePerRank(0)
+            .getTicketPricePerRank()
             .call({ from: walletAddress });
 
           return {

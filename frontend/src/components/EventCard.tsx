@@ -7,12 +7,8 @@ type Props = {
   event: Event;
 };
 
-// TODO: Display info about ranks here
-
 function EventCard(props: Props) {
   const navigate = useNavigate();
-
-  console.log(props.event);
 
   const onClick = () => {
     navigate("/event-details", {
