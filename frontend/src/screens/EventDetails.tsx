@@ -2,12 +2,12 @@ import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { CenteredDiv, StyledButton } from "../styles";
-import { getDateFormated } from "../utils/date";
+import { Event } from "../screens/AdminEventsPanel";
 
 function EventDetails() {
   const [ticketsNumber, setTicketsNumber] = useState(0);
   const location = useLocation();
-  const { event } = location.state;
+  const { event }: { event: Event } = location.state;
 
   const buyTicket = () => {
     // TODO request "ticketsNumber" tickets
@@ -18,10 +18,6 @@ function EventDetails() {
     <CenteredDiv>
       <TitleText>Campaign name</TitleText>
       <DetailsText>{event.name}</DetailsText>
-      <TitleText>Description</TitleText>
-      <DetailsText>{event.description}</DetailsText>
-      <TitleText>Duration</TitleText>
-      <DetailsText>Date: {getDateFormated(new Date(event.date))}</DetailsText>
       <TitleText>Buy ticket: </TitleText>
       <HorizontalDiv>
         <TitleText>Number of tickets: </TitleText>

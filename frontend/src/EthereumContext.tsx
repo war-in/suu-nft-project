@@ -1,11 +1,18 @@
 import { createContext, useContext, useState } from "react";
 import Web3 from "web3";
-import { setupContracts } from "./utils/web3-helpers";
+import {
+  DynamicContracts,
+  createContract,
+  setupContracts,
+} from "./utils/web3-helpers";
+import { Event } from "../src/screens/AdminEventsPanel";
 
 interface EthActions {
   walletAddress?: string;
   connectWallet: () => Promise<void>;
   createRanks: (params: CreateRanksRequest) => Promise<void>;
+  createTestTicketContract: (params: any) => Promise<void>;
+  fetchEvents: () => Promise<Event[]>;
   fetchRanksNames: () => Promise<string[]>;
   getRanksContractAddress: (name: string) => Promise<string>;
   getWalletAddressAsync: () => Promise<string>;
@@ -49,6 +56,16 @@ export const EthereumContextProvider = ({ children }: Props): JSX.Element => {
     return addresses[0];
   };
 
+  const createTestTicketContract = async (params: any[]) => {
+    try {
+      await contracts.ticketsAdmin.methods
+        .createTicketContract(...params)
+        .send({ from: walletAddress, gas: 13860200 });
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+
   const fetchRanksNames = async () => {
     try {
       const result = await contracts.ranksAdmin.methods
@@ -57,6 +74,57 @@ export const EthereumContextProvider = ({ children }: Props): JSX.Element => {
       return result;
     } catch (err) {
       console.warn(err);
+    }
+  };
+
+  const fetchEvents = async () => {
+    try {
+      const events: string[] = await contracts.ticketsAdmin.methods
+        .getAllTicketsNames()
+        .call({ from: walletAddress });
+
+      const formattedEvents = await Promise.all(
+        events.map(async (eventName) => {
+          const ticketContractAddress = await contracts.ticketsAdmin.methods
+            .ticketsByName(eventName)
+            .call({ from: walletAddress });
+          const eventContract = createContract(
+            DynamicContracts.EVENT,
+            ticketContractAddress
+          );
+          const name = await eventContract.methods
+            .name()
+            .call({ from: walletAddress });
+          const symbol = await eventContract.methods
+            .symbol()
+            .call({ from: walletAddress });
+          const ranksAddress = await eventContract.methods
+            .ranksAddress()
+            .call({ from: walletAddress });
+          const saleStartTimePerRank = await eventContract.methods
+            .saleStartTimePerRank(0) /// TODO: FETCH WHOLE ARRAY HERE, INVESTIGATE WHY INDEX MUST BE PROVIDED!!!
+            .call({ from: walletAddress });
+          const maxTicketsPerUserPerRank = await eventContract.methods
+            .maxTicketsPerUserPerRank(0)
+            .call({ from: walletAddress });
+          const ticketPricePerRank = await eventContract.methods
+            .ticketPricePerRank(0)
+            .call({ from: walletAddress });
+
+          return {
+            name,
+            symbol,
+            ranksAddress,
+            saleStartTimePerRank,
+            maxTicketsPerUserPerRank,
+            ticketPricePerRank,
+          } as unknown as Event;
+        })
+      );
+      return formattedEvents;
+    } catch (err) {
+      console.warn(err);
+      return [];
     }
   };
 
@@ -80,7 +148,6 @@ export const EthereumContextProvider = ({ children }: Props): JSX.Element => {
     const address = await contracts.ranksAdmin.methods
       .ranksByName(name)
       .call({ from: walletAddress });
-
     return address;
   };
 
@@ -88,6 +155,8 @@ export const EthereumContextProvider = ({ children }: Props): JSX.Element => {
     walletAddress,
     connectWallet,
     createRanks,
+    createTestTicketContract,
+    fetchEvents,
     fetchRanksNames,
     getRanksContractAddress,
     getWalletAddressAsync,

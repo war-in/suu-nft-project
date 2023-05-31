@@ -1,29 +1,34 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import EventCard from "../components/EventCard";
 import { CenteredDiv } from "../styles";
 import { Event } from "./AdminEventsPanel";
-
-const events: Event[] = [
-  {
-    name: "Koncert 1",
-    description: "Opis 1",
-    date: new Date().toISOString(),
-    ticketsNumber: 1000,
-    ranksGroup: "mock",
-  },
-  {
-    name: "Koncert 2",
-    description: "Opis 2",
-    date: new Date().toISOString(),
-    ticketsNumber: 500,
-    ranksGroup: "mock",
-  },
-];
+import { useEthereum } from "../EthereumContext";
 
 function EventsPage() {
-  // TODO get events from backend
-  //   const [events, setEvents] = useState<Event[]>([]);
+  const [events, setEvents] = useState<Event[]>([]);
+
+  const { fetchEvents, createTestTicketContract } = useEthereum();
+
+  const fetchEventsAsync = async () => {
+    const result = await fetchEvents();
+    setEvents(result);
+  };
+
+  useEffect(() => {
+    fetchEventsAsync();
+  }, []);
+
+  const onTmpButtonPress = () => {
+    createTestTicketContract([
+      "Event 1",
+      "EVT1",
+      "0x1021d9c58a0D94F1Daa10e0BfD39B7420555b841".toLowerCase(),
+      [1685558292, 1685558292],
+      [2, 3],
+      [5, 10],
+    ]);
+  };
 
   return (
     <CenteredDiv>
@@ -32,6 +37,7 @@ function EventsPage() {
           <EventCard event={event} key={event.name} />
         ))}
       </EventsContainer>
+      <button onClick={onTmpButtonPress}>Create test contract</button>
     </CenteredDiv>
   );
 }

@@ -14,11 +14,12 @@ type FormInputs = {
 };
 
 export interface Event {
-  ranksGroup: string;
   name: string;
-  description: string;
-  date: string;
-  ticketsNumber: number;
+  symbol: string;
+  ranksAddress: string;
+  saleStartTimePerRank: number[];
+  maxTicketsPerUserPerRank: number[];
+  ticketPricePerRank: number[];
 }
 
 function AdminEventsPanel() {
@@ -29,7 +30,7 @@ function AdminEventsPanel() {
 
   const createEvent = async (event: Event) => {
     const ranksContractAddress = await getRanksContractAddress(
-      event.ranksGroup
+      event.ranksAddress
     );
 
     console.log(ranksContractAddress);
@@ -55,11 +56,12 @@ function AdminEventsPanel() {
       ranksGroup,
     }) => {
       const event: Event = {
-        ranksGroup,
-        name: eventName,
-        description: eventDescription,
-        date: new Date(eventDate).toISOString(),
-        ticketsNumber: eventTicketsNumber,
+        ranksAddress: "mock", /// TODO: ADD PROPER PARSING!!!
+        name: "mock",
+        symbol: "mock",
+        saleStartTimePerRank: [],
+        maxTicketsPerUserPerRank: [],
+        ticketPricePerRank: [],
       };
 
       createEvent(event);
