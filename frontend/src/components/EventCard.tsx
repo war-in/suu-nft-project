@@ -58,10 +58,4 @@ const StyledText = styled.div`
   text-align: center;
 `;
 
-const StyledDate = styled.div`
-  font-size: 15px;
-  color: #dcc9b6;
-  text-align: center;
-`;
-
 export default EventCard;
