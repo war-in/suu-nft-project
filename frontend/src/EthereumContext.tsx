@@ -14,6 +14,7 @@ interface EthActions {
   createTestTicketContract: (params: any) => Promise<void>;
   fetchEvents: () => Promise<Event[]>;
   fetchRanksNames: () => Promise<string[]>;
+  getCurrentRank: (contractAddress: string) => Promise<number>;
   getRanksContractAddress: (name: string) => Promise<string>;
   getWalletAddressAsync: () => Promise<string>;
 }
@@ -102,7 +103,7 @@ export const EthereumContextProvider = ({ children }: Props): JSX.Element => {
             .ranksAddress()
             .call({ from: walletAddress });
           const saleStartTimePerRank = await eventContract.methods
-            .getSaleStartTimePerRank() /// TODO: FETCH WHOLE ARRAY HERE, INVESTIGATE WHY INDEX MUST BE PROVIDED!!!
+            .getSaleStartTimePerRank()
             .call({ from: walletAddress });
           const maxTicketsPerUserPerRank = await eventContract.methods
             .getMaxTicketsPerUserPerRank()
@@ -126,6 +127,18 @@ export const EthereumContextProvider = ({ children }: Props): JSX.Element => {
       console.warn(err);
       return [];
     }
+  };
+
+  const getCurrentRank = async (contractAddress: string) => {
+    const ranksContract = createContract(
+      DynamicContracts.RANKS,
+      contractAddress
+    );
+    const rankNumber = await ranksContract.methods
+      .getCurrentRank(walletAddress)
+      .call({ from: walletAddress });
+    console.log(rankNumber);
+    return rankNumber;
   };
 
   const createRanks = async (params: CreateRanksRequest) => {
@@ -158,6 +171,7 @@ export const EthereumContextProvider = ({ children }: Props): JSX.Element => {
     createTestTicketContract,
     fetchEvents,
     fetchRanksNames,
+    getCurrentRank,
     getRanksContractAddress,
     getWalletAddressAsync,
   };
