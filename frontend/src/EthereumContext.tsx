@@ -11,12 +11,14 @@ interface EthActions {
   walletAddress?: string;
   connectWallet: () => Promise<void>;
   createRanks: (params: CreateRanksRequest) => Promise<void>;
+  createEvent: (params: CreateEventRequest) => Promise<void>;
   createTestTicketContract: (params: any) => Promise<void>;
   fetchEvents: () => Promise<Event[]>;
   fetchRanksNames: () => Promise<string[]>;
   getCurrentRank: (contractAddress: string) => Promise<number>;
   getRanksContractAddress: (name: string) => Promise<string>;
   getWalletAddressAsync: () => Promise<string>;
+  getRanksNumber: (contractAddress: string) => Promise<number>;
 }
 
 interface CreateRanksRequest {
@@ -25,6 +27,15 @@ interface CreateRanksRequest {
   ranksNames: string[];
   ranksSymbols: string[];
   ranksPrices: number[];
+}
+
+export interface CreateEventRequest {
+  ticketName: string;
+  ticketSymbol: string;
+  ranksAddress: string;
+  saleStartTimePerRank: number[];
+  maxTicketsPerUserPerRank: number[];
+  ticketPricePerRank: number[];
 }
 
 interface Props {
@@ -141,6 +152,18 @@ export const EthereumContextProvider = ({ children }: Props): JSX.Element => {
     return rankNumber;
   };
 
+  const getRanksNumber = async (contractAddress: string) => {
+    const ranksContract = createContract(
+      DynamicContracts.RANKS,
+      contractAddress
+    );
+    const rankNumber = await ranksContract.methods
+      .numberOfRanks()
+      .call({ from: walletAddress });
+    console.log(rankNumber);
+    return rankNumber;
+  };
+
   const createRanks = async (params: CreateRanksRequest) => {
     try {
       await contracts.ranksAdmin.methods
@@ -152,6 +175,23 @@ export const EthereumContextProvider = ({ children }: Props): JSX.Element => {
           params.ranksPrices
         )
         .send({ from: walletAddress, gas: 5000000 });
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+
+  const createEvent = async (params: CreateEventRequest) => {
+    try {
+      await contracts.ticketsAdmin.methods
+        .createTicketContract(
+          params.ticketName,
+          params.ticketSymbol,
+          params.ranksAddress,
+          params.saleStartTimePerRank,
+          params.maxTicketsPerUserPerRank,
+          params.ticketPricePerRank
+        )
+        .send({ from: walletAddress, gas: 10000000 });
     } catch (err) {
       console.warn(err);
     }
@@ -174,6 +214,8 @@ export const EthereumContextProvider = ({ children }: Props): JSX.Element => {
     getCurrentRank,
     getRanksContractAddress,
     getWalletAddressAsync,
+    getRanksNumber,
+    createEvent,
   };
 
   return (
