@@ -19,8 +19,12 @@ contract ManageRanks is AccessControl {
      */
     string[] private allRanksNames;
 
+    event ManageRanksDeployed(address indexed manage_ranks_address);
+
     constructor() {
         _grantRole(ADMIN_ROLE, msg.sender);
+
+        emit ManageRanksDeployed(address (this));
     }
 
     /**

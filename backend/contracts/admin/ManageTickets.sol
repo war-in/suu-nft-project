@@ -15,8 +15,12 @@ contract ManageTickets is AccessControl {
      */
     string[] private allTicketsNames;
 
+    event ManageTicketsDeployed(address indexed manage_tickets_address);
+
     constructor() {
         _grantRole(ADMIN_ROLE, msg.sender);
+
+        emit ManageTicketsDeployed(address (this));
     }
 
     /**
