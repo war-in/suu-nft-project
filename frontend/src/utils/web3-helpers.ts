@@ -5,11 +5,9 @@ import RanksAdminContract from "../abi/manageRanks.json";
 import RanksContract from "../abi/ranks.json";
 import TicketsAdminContract from "../abi/manageTickets.json";
 import TicketContract from "../abi/ticket.json";
-import {
-  CONTRACT_PROVIDER_URL,
-  MANAGE_RANKS_CONTRACT_ADDRESS,
-  MANAGE_TICKETS_CONTRACT_ADDRESS,
-} from "./config";
+import { CONTRACT_PROVIDER_URL } from "./config";
+import MANAGE_RANKS_CONTRACT_ADDRESS from "common/ranks-contract-address.json";
+import MANAGE_TICKETS_CONTRACT_ADDRESS from "common/tickets-contract-address.json";
 
 export interface Contracts {
   ranksAdmin: Contract;
@@ -59,11 +57,11 @@ export const setupContracts = (): Contracts => {
 
   const ranksAdmin = new Contract(
     formattedRanksAdminContract,
-    MANAGE_RANKS_CONTRACT_ADDRESS
+    MANAGE_RANKS_CONTRACT_ADDRESS.toLowerCase()
   );
   const ticketsAdmin = new Contract(
     formattedTicketsAdminContract,
-    MANAGE_TICKETS_CONTRACT_ADDRESS
+    MANAGE_TICKETS_CONTRACT_ADDRESS.toLowerCase()
   );
 
   return {
