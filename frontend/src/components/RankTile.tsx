@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { getDateFormated } from "../utils/date";
+import { getDateFormatted } from "../utils/date";
 import { CenteredDiv } from "../styles";
 
 interface RankDetails {
@@ -21,7 +21,7 @@ const RankTile: React.FC<Props> = ({ data, index }) => {
       <DetailsText>{data.ticketPricePerRank} ETH</DetailsText>
       <HeadingText>Start sale time</HeadingText>
       <DetailsText>
-        {getDateFormated(new Date(+data.saleStartTimePerRank))}
+        {getDateFormatted(new Date(+data.saleStartTimePerRank))}
       </DetailsText>
       <HeadingText>Ticket limit per rank</HeadingText>
       <DetailsText>{data.maxTicketsPerUserPerRank}</DetailsText>

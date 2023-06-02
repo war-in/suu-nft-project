@@ -1,4 +1,4 @@
-export const getDateFormated = (date: Date) => {
+export const getDateFormatted = (date: Date) => {
   return (
     date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate()
   );
