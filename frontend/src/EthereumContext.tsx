@@ -212,7 +212,7 @@ export const EthereumContextProvider = ({ children }: Props): JSX.Element => {
         params.maxTicketsPerUserPerRank,
         params.ticketPricePerRank
       )
-      .send({ from: walletAddress, gas: 10000000 })
+      .send({ from: walletAddress, gas: 5000000 })
       .catch(console.warn);
   };
 
@@ -224,10 +224,17 @@ export const EthereumContextProvider = ({ children }: Props): JSX.Element => {
   };
 
   const buyRank = async (contractAddress: string, price: string) => {
+    const ranksContract = createContract(
+      DynamicContracts.RANKS,
+      contractAddress
+    );
+
     const { transactionHash } = await web3.eth.sendTransaction({
       from: walletAddress,
       to: contractAddress,
       value: web3.utils.toWei(price, "ether"),
+      gas: 500000,
+      data: ranksContract.methods.buy().encodeABI(),
     });
     return transactionHash;
   };

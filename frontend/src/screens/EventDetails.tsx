@@ -41,8 +41,8 @@ function EventDetails() {
   };
 
   const purchaseRank = async () => {
-    const tx = await buyRank(event.ranksAddress, ranksPrices[rankNumber + 1]);
-    console.log(tx);
+    await buyRank(event.ranksAddress, ranksPrices[rankNumber]);
+    await getAndSetCurrentRank();
   };
 
   return event ? (
@@ -91,9 +91,6 @@ function EventDetails() {
         {[...Array(event.ticketPricePerRank.length - rankNumber - 1)].map(
           (_, index) => {
             const rankIndex = index + rankNumber + 1;
-
-            console.log(rankIndex);
-            console.log(ranksNames);
 
             return (
               <RankTile
