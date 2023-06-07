@@ -18,8 +18,14 @@ interface EthActions {
   getRanksContractAddress: (name: string) => Promise<string>;
   getWalletAddressAsync: () => Promise<string>;
   getRanksNumber: (contractAddress: string) => Promise<number>;
+  buyRank: (contractAddress: string, price: string) => Promise<string>;
+  getRanksInfoAsync: (contractAddress: string) => Promise<RanksData>;
 }
 
+interface RanksData {
+  prices: string[];
+  names: string[];
+}
 interface CreateRanksRequest {
   name: string;
   numberOfRanks: number;
@@ -137,7 +143,7 @@ export const EthereumContextProvider = ({ children }: Props): JSX.Element => {
     const rankNumber = await ranksContract.methods
       .getCurrentRank(walletAddress)
       .call({ from: walletAddress });
-    return rankNumber;
+    return +rankNumber + 1;
   };
 
   const getRanksNumber = async (contractAddress: string) => {
@@ -149,6 +155,35 @@ export const EthereumContextProvider = ({ children }: Props): JSX.Element => {
       .numberOfRanks()
       .call({ from: walletAddress });
     return rankNumber;
+  };
+
+  const getRanksInfoAsync = async (contractAddress: string) => {
+    const ranksContract = createContract(
+      DynamicContracts.RANKS,
+      contractAddress
+    );
+    const numberOfRanks = await getRanksNumber(contractAddress);
+    const result: RanksData = { prices: [], names: [] };
+
+    for (let i = 0; i < +numberOfRanks; i++) {
+      const rankAddresses = await ranksContract.methods
+        .ranks(i)
+        .call({ from: walletAddress });
+
+      const rankContract = createContract(DynamicContracts.RANK, rankAddresses);
+
+      const rankPrice = await rankContract.methods
+        .price()
+        .call({ from: walletAddress });
+      const rankName = await rankContract.methods
+        .name()
+        .call({ from: walletAddress });
+
+      result.prices.push(rankPrice);
+      result.names.push(rankName);
+    }
+
+    return result;
   };
 
   const createRanks = async (params: CreateRanksRequest) => {
@@ -188,6 +223,15 @@ export const EthereumContextProvider = ({ children }: Props): JSX.Element => {
     return address;
   };
 
+  const buyRank = async (contractAddress: string, price: string) => {
+    const { transactionHash } = await web3.eth.sendTransaction({
+      from: walletAddress,
+      to: contractAddress,
+      value: web3.utils.toWei(price, "ether"),
+    });
+    return transactionHash;
+  };
+
   const actions: EthActions = {
     walletAddress,
     connectWallet,
@@ -199,6 +243,8 @@ export const EthereumContextProvider = ({ children }: Props): JSX.Element => {
     getWalletAddressAsync,
     getRanksNumber,
     createEvent,
+    buyRank,
+    getRanksInfoAsync,
   };
 
   return (

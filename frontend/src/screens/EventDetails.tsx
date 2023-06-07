@@ -9,23 +9,40 @@ import RankTile from "../components/RankTile";
 function EventDetails() {
   const [ticketsNumber, setTicketsNumber] = useState(0);
   const [rankNumber, setRankNumber] = useState(-1);
+  const [ranksPrices, setRanksPrices] = useState<string[]>([]);
+  const [ranksNames, setRanksNames] = useState<string[]>([]);
   const location = useLocation();
   const { event }: { event: Event } = location.state;
 
-  const { getCurrentRank } = useEthereum();
+  const { getCurrentRank, buyRank, getRanksInfoAsync } = useEthereum();
 
   const getAndSetCurrentRank = async () => {
     const rank = await getCurrentRank(event.ranksAddress);
-    setRankNumber(+rank);
+    setRankNumber(rank);
+  };
+
+  const fetchRanksData = async () => {
+    const { prices, names } = await getRanksInfoAsync(event.ranksAddress);
+    setRanksPrices(prices);
+    setRanksNames(names);
   };
 
   useEffect(() => {
     getAndSetCurrentRank();
   }, []);
 
+  useEffect(() => {
+    fetchRanksData();
+  }, [rankNumber]);
+
   const buyTicket = () => {
     // TODO request "ticketsNumber" tickets
     console.log(ticketsNumber);
+  };
+
+  const purchaseRank = async () => {
+    const tx = await buyRank(event.ranksAddress, ranksPrices[rankNumber + 1]);
+    console.log(tx);
   };
 
   return event ? (
@@ -46,7 +63,7 @@ function EventDetails() {
 
       <CenteredDiv>
         <TitleText>Your current rank: </TitleText>
-        {rankNumber >= 0 ? (
+        {rankNumber > 0 ? (
           <RankTile
             data={{
               saleStartTimePerRank: event.saleStartTimePerRank[rankNumber],
@@ -54,10 +71,19 @@ function EventDetails() {
                 event.maxTicketsPerUserPerRank[rankNumber],
               ticketPricePerRank: event.ticketPricePerRank[rankNumber],
             }}
-            index={rankNumber}
+            rankName={ranksNames[rankNumber]}
+            rankPrice={ranksPrices[rankNumber]}
           />
         ) : (
-          <DetailsText>You have no rank yet</DetailsText>
+          <RankTile
+            data={{
+              saleStartTimePerRank: event.saleStartTimePerRank[rankNumber],
+              maxTicketsPerUserPerRank:
+                event.maxTicketsPerUserPerRank[rankNumber],
+              ticketPricePerRank: event.ticketPricePerRank[rankNumber],
+            }}
+            rankName="Open sale"
+          />
         )}
       </CenteredDiv>
       <TitleText>Possible ranks: </TitleText>
@@ -65,6 +91,9 @@ function EventDetails() {
         {[...Array(event.ticketPricePerRank.length - rankNumber - 1)].map(
           (_, index) => {
             const rankIndex = index + rankNumber + 1;
+
+            console.log(rankIndex);
+            console.log(ranksNames);
 
             return (
               <RankTile
@@ -75,8 +104,10 @@ function EventDetails() {
                     event.maxTicketsPerUserPerRank[rankIndex],
                   ticketPricePerRank: event.ticketPricePerRank[rankIndex],
                 }}
-                index={rankIndex}
                 purchasable={index === 0}
+                purchaseRank={purchaseRank}
+                rankName={ranksNames[rankIndex - 1]}
+                rankPrice={ranksPrices[rankIndex - 1]}
               />
             );
           }

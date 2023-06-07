@@ -10,16 +10,31 @@ interface RankDetails {
 
 interface Props {
   data: RankDetails;
-  index: number;
   purchasable?: boolean;
+  purchaseRank?: () => Promise<void>;
+  rankName: string;
+  rankPrice?: string;
 }
 
-const RankTile: React.FC<Props> = ({ data, index, purchasable = false }) => {
+const RankTile: React.FC<Props> = ({
+  data,
+  purchasable = false,
+  purchaseRank,
+  rankName,
+  rankPrice,
+}) => {
   return (
     <RankTileWrapper>
       <CenteredDiv>
-        <TitleText>Rank {index}</TitleText>
-        <HeadingText>Price</HeadingText>
+        <TitleText>{rankName}</TitleText>
+        {rankPrice && (
+          <>
+            <HeadingText>Rank Price</HeadingText>
+            <DetailsText>{rankPrice} ETH</DetailsText>
+          </>
+        )}
+        <HeadingText>Benefits</HeadingText>
+        <HeadingText>Ticket Price</HeadingText>
         <DetailsText>{data.ticketPricePerRank} ETH</DetailsText>
         <HeadingText>Start sale time</HeadingText>
         <DetailsText>
@@ -27,7 +42,7 @@ const RankTile: React.FC<Props> = ({ data, index, purchasable = false }) => {
         </DetailsText>
         <HeadingText>Ticket limit per rank</HeadingText>
         <DetailsText>{data.maxTicketsPerUserPerRank}</DetailsText>
-        {purchasable && <StyledButton>Buy</StyledButton>}
+        {purchasable && <StyledButton onClick={purchaseRank}>Buy</StyledButton>}
       </CenteredDiv>
     </RankTileWrapper>
   );

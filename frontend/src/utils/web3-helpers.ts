@@ -3,6 +3,7 @@ import Contract from "web3-eth-contract";
 
 import RanksAdminContract from "../abi/manageRanks.json";
 import RanksContract from "../abi/ranks.json";
+import RankContract from "../abi/rank.json";
 import TicketsAdminContract from "../abi/manageTickets.json";
 import TicketContract from "../abi/ticket.json";
 import { CONTRACT_PROVIDER_URL } from "./config";
@@ -15,6 +16,7 @@ export interface Contracts {
 }
 
 export enum DynamicContracts {
+  RANK = "rank",
   RANKS = "ranks",
   EVENT = "event",
 }
@@ -44,6 +46,10 @@ export const createContract = (
       const formattedTicketContract = formatContract(TicketContract);
       const ticketContract = new Contract(formattedTicketContract, address);
       return ticketContract;
+    case DynamicContracts.RANK:
+      const formattedRankContract = formatContract(RankContract);
+      const rankContract = new Contract(formattedRankContract, address);
+      return rankContract;
     default:
       throw new Error("Contract type not implemented!");
   }
