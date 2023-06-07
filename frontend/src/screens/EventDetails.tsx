@@ -16,7 +16,7 @@ function EventDetails() {
 
   const getAndSetCurrentRank = async () => {
     const rank = await getCurrentRank(event.ranksAddress);
-    setRankNumber(rank);
+    setRankNumber(+rank);
   };
 
   useEffect(() => {
@@ -43,22 +43,43 @@ function EventDetails() {
           Buy tickets
         </StyledButton>
       </HorizontalDiv>
+
+      <CenteredDiv>
+        <TitleText>Your current rank: </TitleText>
+        {rankNumber >= 0 ? (
+          <RankTile
+            data={{
+              saleStartTimePerRank: event.saleStartTimePerRank[rankNumber],
+              maxTicketsPerUserPerRank:
+                event.maxTicketsPerUserPerRank[rankNumber],
+              ticketPricePerRank: event.ticketPricePerRank[rankNumber],
+            }}
+            index={rankNumber}
+          />
+        ) : (
+          <DetailsText>You have no rank yet</DetailsText>
+        )}
+      </CenteredDiv>
+      <TitleText>Possible ranks: </TitleText>
       <>
-        {[...Array(event.ticketPricePerRank.length)].map(
-          (
-            _,
-            index /// TODO: RIGHT NOW DISPLAYING ALL RANKS, SHOW ONLY ACTUAL AND NEXT POSSIBLE, ADD OPTION OF PURCHASING RANKS
-          ) => (
-            <RankTile
-              key={index}
-              data={{
-                saleStartTimePerRank: event.saleStartTimePerRank[index],
-                maxTicketsPerUserPerRank: event.maxTicketsPerUserPerRank[index],
-                ticketPricePerRank: event.ticketPricePerRank[index],
-              }}
-              index={index}
-            />
-          )
+        {[...Array(event.ticketPricePerRank.length - rankNumber - 1)].map(
+          (_, index) => {
+            const rankIndex = index + rankNumber + 1;
+
+            return (
+              <RankTile
+                key={index}
+                data={{
+                  saleStartTimePerRank: event.saleStartTimePerRank[rankIndex],
+                  maxTicketsPerUserPerRank:
+                    event.maxTicketsPerUserPerRank[rankIndex],
+                  ticketPricePerRank: event.ticketPricePerRank[rankIndex],
+                }}
+                index={rankIndex}
+                purchasable={index === 0}
+              />
+            );
+          }
         )}
       </>
     </CenteredDiv>
