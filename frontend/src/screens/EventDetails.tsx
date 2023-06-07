@@ -66,13 +66,13 @@ function EventDetails() {
         {rankNumber > 0 ? (
           <RankTile
             data={{
-              saleStartTimePerRank: event.saleStartTimePerRank[rankNumber],
+              saleStartTimePerRank: event.saleStartTimePerRank[rankNumber - 1],
               maxTicketsPerUserPerRank:
-                event.maxTicketsPerUserPerRank[rankNumber],
-              ticketPricePerRank: event.ticketPricePerRank[rankNumber],
+                event.maxTicketsPerUserPerRank[rankNumber - 1],
+              ticketPricePerRank: event.ticketPricePerRank[rankNumber - 1],
             }}
-            rankName={ranksNames[rankNumber]}
-            rankPrice={ranksPrices[rankNumber]}
+            rankName={ranksNames[rankNumber - 1]}
+            rankPrice={ranksPrices[rankNumber - 1]}
           />
         ) : (
           <RankTile
