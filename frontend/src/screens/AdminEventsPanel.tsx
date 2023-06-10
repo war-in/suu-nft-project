@@ -1,74 +1,115 @@
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
 import { CenteredDiv, StyledButton } from "../styles";
-import { useEthereum } from "../EthereumContext";
+import { CreateEventRequest, useEthereum } from "../EthereumContext";
 import { useEffect, useState } from "react";
-import { DynamicContracts, createContract } from "../utils/web3-helpers";
 
 type FormInputs = {
   ranksGroup: string;
-  eventName: string;
-  eventDescription: string;
-  eventDate: string;
-  eventTicketsNumber: number;
+  name: string;
+  symbol: string;
+  [key: `saleStartTime${number}`]: Date;
+  [key: `maxTicketsPerUser${number}`]: number;
+  [key: `ticketPrice${number}`]: number;
 };
 
 export interface Event {
-  ranksGroup: string;
   name: string;
-  description: string;
-  date: string;
-  ticketsNumber: number;
+  symbol: string;
+  ranksAddress: string;
+  saleStartTimePerRank: number[];
+  maxTicketsPerUserPerRank: number[];
+  ticketPricePerRank: number[];
 }
 
 function AdminEventsPanel() {
   const [ranksGroups, setRanksGroups] = useState<string[]>();
+  const [numberOfRanks, setNumberOfRanks] = useState<number>(0);
+  const [ranksAddress, setRanksAddress] = useState<string | null>(null);
 
   const { register, handleSubmit } = useForm<FormInputs>();
-  const { fetchRanksNames, getRanksContractAddress } = useEthereum();
+  const {
+    fetchRanksNames,
+    getRanksContractAddress,
+    getRanksNumber,
+    createEvent,
+  } = useEthereum();
 
-  const createEvent = async (event: Event) => {
-    const ranksContractAddress = await getRanksContractAddress(
-      event.ranksGroup
-    );
-
-    console.log(ranksContractAddress);
-
-    const ranksContract = createContract(
-      DynamicContracts.RANKS,
-      ranksContractAddress
-    );
-
-    console.log(ranksContract);
-  };
+  const showRanksForm = handleSubmit(async ({ ranksGroup }) => {
+    const rankAddress = await getRanksContractAddress(ranksGroup);
+    setRanksAddress(rankAddress);
+    const ranksNumber = await getRanksNumber(rankAddress);
+    setNumberOfRanks(+ranksNumber);
+  });
 
   useEffect(() => {
     fetchRanksNames().then((names) => setRanksGroups(names));
   }, []);
 
-  const onSubmit = handleSubmit(
-    async ({
-      eventName,
-      eventDescription,
-      eventDate,
-      eventTicketsNumber,
-      ranksGroup,
-    }) => {
-      const event: Event = {
-        ranksGroup,
-        name: eventName,
-        description: eventDescription,
-        date: new Date(eventDate).toISOString(),
-        ticketsNumber: eventTicketsNumber,
-      };
+  const onSubmit = handleSubmit(async (values) => {
+    const saleStartTimePerRank: number[] = [];
+    const maxTicketsPerUserPerRank: number[] = [];
+    const ticketPricePerRank: number[] = [];
 
-      createEvent(event);
-    }
-  );
+    Object.keys(values).forEach((key) => {
+      const index = +key.match(/\d+/)!;
+      //@ts-ignore
+      const value = values[key];
+
+      if (key.includes("saleStartTime")) {
+        saleStartTimePerRank[index] = new Date(value).getTime();
+      } else if (key.includes("maxTicketsPerUser")) {
+        maxTicketsPerUserPerRank[index] = +value;
+      } else if (key.includes("ticketPrice")) {
+        ticketPricePerRank[index] = value;
+      }
+    });
+
+    const event: CreateEventRequest = {
+      ticketName: values.name,
+      ticketSymbol: values.symbol,
+      ranksAddress: ranksAddress!, // I shouldnt do it, but ...
+      saleStartTimePerRank,
+      maxTicketsPerUserPerRank,
+      ticketPricePerRank,
+    };
+
+    createEvent(event);
+  });
+
+  const RankPart = ({ index }: { index: number }) => {
+    return (
+      <CenteredDiv>
+        <LabelText htmlFor="saleStartTime">Sale start time</LabelText>
+        <StyledInput
+          type="date"
+          className="form-control"
+          // placeholder="Symbol"
+          {...register(`saleStartTime${index}`)}
+          required
+        />
+        <LabelText htmlFor="maxTicketsPerUser">Max tickets per user</LabelText>
+        <StyledInput
+          type="number"
+          className="form-control"
+          // placeholder="Symbol"
+          {...register(`maxTicketsPerUser${index}`)}
+          required
+        />
+        <LabelText htmlFor="ticketPrice">Ticket price</LabelText>
+        <StyledInput
+          type="number"
+          className="form-control"
+          {...register(`ticketPrice${index}`)}
+          required
+        />
+      </CenteredDiv>
+    );
+  };
 
   return (
     <CenteredDiv>
-      <StyledForm onSubmit={onSubmit}>
+      <StyledForm onSubmit={showRanksForm}>
         <LabelText htmlFor="ranksGroup">Ranks group</LabelText>
         <StyledSelect
           className="form-control"
@@ -80,35 +121,29 @@ function AdminEventsPanel() {
             </option>
           ))}
         </StyledSelect>
-        <LabelText htmlFor="eventName">Event name</LabelText>
+        <LabelText htmlFor="name">Event name</LabelText>
         <StyledInput
           type="text"
           className="form-control"
-          placeholder="Event name"
-          {...register("eventName")}
+          // placeholder="Event name"
+          {...register("name")}
           required
         />
-        <LabelText htmlFor="eventDescription">Event description</LabelText>
+        <LabelText htmlFor="symbol">Event symbol</LabelText>
         <StyledInput
+          type="text"
           className="form-control"
-          placeholder="Event description"
-          {...register("eventDescription")}
+          // placeholder="Event description"
+          {...register("symbol")}
         />
-        <LabelText htmlFor="eventDate"> Event date </LabelText>
-        <StyledInput
-          type="date"
-          className="form-control"
-          {...register("eventDate")}
-          required
-        />
-        <LabelText htmlFor="eventTicketsNumber"> Number of tickets </LabelText>
-        <StyledInput
-          type="number"
-          className="form-control"
-          {...register("eventTicketsNumber")}
-          required
-        />
-        <StyledButton type="submit">Save</StyledButton>
+        <StyledButton type="submit">Set</StyledButton>
+      </StyledForm>
+      <StyledForm onSubmit={onSubmit}>
+        {numberOfRanks > 0 &&
+          [...Array(numberOfRanks + 1)].map((_, index) => (
+            <RankPart key={index} index={index} />
+          ))}
+        {numberOfRanks > 0 && <StyledButton type="submit">Create</StyledButton>}
       </StyledForm>
     </CenteredDiv>
   );

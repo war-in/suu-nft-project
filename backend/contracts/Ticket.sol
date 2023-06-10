@@ -99,6 +99,26 @@ contract Ticket is ERC721, AccessControl {
         }
     }
 
+    function getSaleStartTimePerRank()
+        external
+        view
+        returns (uint256[] memory)
+    {
+        return saleStartTimePerRank;
+    }
+
+    function getMaxTicketsPerUserPerRank()
+        external
+        view
+        returns (uint256[] memory)
+    {
+        return maxTicketsPerUserPerRank;
+    }
+
+    function getTicketPricePerRank() external view returns (uint256[] memory) {
+        return ticketPricePerRank;
+    }
+
     function supportsInterface(
         bytes4 interfaceId
     ) public view virtual override(ERC721, AccessControl) returns (bool) {

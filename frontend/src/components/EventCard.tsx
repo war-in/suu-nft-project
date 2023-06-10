@@ -2,13 +2,10 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Event } from "../screens/AdminEventsPanel";
-import { getDateFormated } from "../utils/date";
 
 type Props = {
   event: Event;
 };
-
-// TODO: Display info about ranks here
 
 function EventCard(props: Props) {
   const navigate = useNavigate();
@@ -23,11 +20,12 @@ function EventCard(props: Props) {
 
   return (
     <VerticalContainer onClick={onClick}>
-      <StyledName>{props.event.name}</StyledName>
-      <StyledDate>
-        Date: <br />
-        {getDateFormated(new Date(props.event.date))}
-      </StyledDate>
+      <StyledName>{`name: ${props.event.name}`}</StyledName>
+      <StyledText>{`symbol: ${props.event.symbol}`}</StyledText>
+      <StyledText>{`ranks: ${props.event.ranksAddress.substring(
+        0,
+        8
+      )}...`}</StyledText>
     </VerticalContainer>
   );
 }
@@ -41,7 +39,7 @@ const VerticalContainer = styled.div`
   background-color: #6d4c3d;
   border-radius: 0.7rem;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: space-around;
   align-items: center;
   cursor: pointer;
 `;
@@ -53,9 +51,10 @@ const StyledName = styled.div`
   text-align: center;
 `;
 
-const StyledDate = styled.div`
-  font-size: 15px;
-  color: #dcc9b6;
+const StyledText = styled.div`
+  font-size: 20px;
+  font-weight: 400;
+  color: #bbb;
   text-align: center;
 `;
 

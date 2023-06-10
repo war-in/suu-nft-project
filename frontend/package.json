@@ -21,7 +21,7 @@
     "web-vitals": "^2.1.4",
     "web3": "^1.9.0",
     "web3-eth-contract": "^1.10.0",
-    "contracts": "file:../backend/build/contracts"
+    "common": "../common"
   },
   "scripts": {
     "start": "react-app-rewired start",

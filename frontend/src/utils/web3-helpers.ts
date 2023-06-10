@@ -1,14 +1,13 @@
 import Web3 from "web3";
 import Contract from "web3-eth-contract";
 
-import RanksAdminContract from "contracts/ManageRanks.json";
-import RanksContract from "contracts/Ranks.json";
-import TicketsAdminContract from "contracts/ManageTickets.json";
-import {
-  CONTRACT_PROVIDER_URL,
-  MANAGE_RANKS_CONTRACT_ADDRESS,
-  MANAGE_TICKETS_CONTRACT_ADDRESS,
-} from "./config";
+import RanksAdminContract from "../abi/manageRanks.json";
+import RanksContract from "../abi/ranks.json";
+import TicketsAdminContract from "../abi/manageTickets.json";
+import TicketContract from "../abi/ticket.json";
+import { CONTRACT_PROVIDER_URL } from "./config";
+import MANAGE_RANKS_CONTRACT_ADDRESS from "common/ranks-contract-address.json";
+import MANAGE_TICKETS_CONTRACT_ADDRESS from "common/tickets-contract-address.json";
 
 export interface Contracts {
   ranksAdmin: Contract;
@@ -17,13 +16,14 @@ export interface Contracts {
 
 export enum DynamicContracts {
   RANKS = "ranks",
+  EVENT = "event",
 }
 
 const ethereum = window.ethereum;
 //@ts-ignore
 const web3 = new Web3(ethereum);
 
-const formatContract = (contract: Record<string, unknown>) => {
+const formatContract = (contract: object) => {
   return JSON.parse(JSON.stringify(contract));
 };
 
@@ -38,8 +38,12 @@ export const createContract = (
   switch (contractType) {
     case DynamicContracts.RANKS:
       const formattedRanksContract = formatContract(RanksContract);
-      const ranksContract = new Contract(formattedRanksContract.abi, address);
+      const ranksContract = new Contract(formattedRanksContract, address);
       return ranksContract;
+    case DynamicContracts.EVENT:
+      const formattedTicketContract = formatContract(TicketContract);
+      const ticketContract = new Contract(formattedTicketContract, address);
+      return ticketContract;
     default:
       throw new Error("Contract type not implemented!");
   }
@@ -52,12 +56,12 @@ export const setupContracts = (): Contracts => {
   const formattedTicketsAdminContract = formatContract(TicketsAdminContract);
 
   const ranksAdmin = new Contract(
-    formattedRanksAdminContract.abi,
-    MANAGE_RANKS_CONTRACT_ADDRESS
+    formattedRanksAdminContract,
+    MANAGE_RANKS_CONTRACT_ADDRESS.toLowerCase()
   );
   const ticketsAdmin = new Contract(
-    formattedTicketsAdminContract.abi,
-    MANAGE_TICKETS_CONTRACT_ADDRESS
+    formattedTicketsAdminContract,
+    MANAGE_TICKETS_CONTRACT_ADDRESS.toLowerCase()
   );
 
   return {

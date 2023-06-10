@@ -1,13 +1,27 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { CenteredDiv, StyledButton } from "../styles";
-import { getDateFormated } from "../utils/date";
+import { Event } from "../screens/AdminEventsPanel";
+import { useEthereum } from "../EthereumContext";
+import RankTile from "../components/RankTile";
 
 function EventDetails() {
   const [ticketsNumber, setTicketsNumber] = useState(0);
+  const [rankNumber, setRankNumber] = useState(-1);
   const location = useLocation();
-  const { event } = location.state;
+  const { event }: { event: Event } = location.state;
+
+  const { getCurrentRank } = useEthereum();
+
+  const getAndSetCurrentRank = async () => {
+    const rank = await getCurrentRank(event.ranksAddress);
+    setRankNumber(rank);
+  };
+
+  useEffect(() => {
+    getAndSetCurrentRank();
+  }, []);
 
   const buyTicket = () => {
     // TODO request "ticketsNumber" tickets
@@ -18,10 +32,6 @@ function EventDetails() {
     <CenteredDiv>
       <TitleText>Campaign name</TitleText>
       <DetailsText>{event.name}</DetailsText>
-      <TitleText>Description</TitleText>
-      <DetailsText>{event.description}</DetailsText>
-      <TitleText>Duration</TitleText>
-      <DetailsText>Date: {getDateFormated(new Date(event.date))}</DetailsText>
       <TitleText>Buy ticket: </TitleText>
       <HorizontalDiv>
         <TitleText>Number of tickets: </TitleText>
@@ -33,6 +43,24 @@ function EventDetails() {
           Buy tickets
         </StyledButton>
       </HorizontalDiv>
+      <>
+        {[...Array(event.ticketPricePerRank.length)].map(
+          (
+            _,
+            index /// TODO: RIGHT NOW DISPLAYING ALL RANKS, SHOW ONLY ACTUAL AND NEXT POSSIBLE, ADD OPTION OF PURCHASING RANKS
+          ) => (
+            <RankTile
+              key={index}
+              data={{
+                saleStartTimePerRank: event.saleStartTimePerRank[index],
+                maxTicketsPerUserPerRank: event.maxTicketsPerUserPerRank[index],
+                ticketPricePerRank: event.ticketPricePerRank[index],
+              }}
+              index={index}
+            />
+          )
+        )}
+      </>
     </CenteredDiv>
   ) : (
     <span>No event provided</span>
