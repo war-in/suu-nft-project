@@ -1,0 +1,28 @@
+services:
+  ganache:
+    build:
+      context: .
+      target: ganache
+    ports:
+      - 8545:8545
+    networks:
+      - backend
+
+  web:
+    build:
+      context: ./frontend
+      target: web
+    depends_on:
+      - ganache
+    ports:
+      - 3000:3000
+    networks:
+      - backend
+    volumes:
+      - /home/app/node_modules
+      - ./frontend:/home/app
+      - ./backend/build:/home/backend/build
+
+networks:
+  backend:
+    driver: "bridge"
