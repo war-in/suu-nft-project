@@ -207,7 +207,7 @@ export const EthereumContextProvider = ({ children }: Props): JSX.Element => {
           params.ranksSymbols,
           params.ranksPrices
         )
-        .send({ from: walletAddress, gas: 5000000 });
+        .send({ from: walletAddress, gas: 10000000 });
     } catch (err) {
       console.warn(err);
     }

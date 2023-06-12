@@ -88,9 +88,11 @@ function EventDetails() {
       {importTxData && (
         <CenteredDiv>
           <TitleText>Purchase completed!</TitleText>
-          <DetailsText>Import your NFT to MetaMask</DetailsText>
-          <TitleText>Data:</TitleText>
-          <DetailsText>{JSON.stringify(importTxData)}</DetailsText>
+          <DetailsText>Import your rank NFT to MetaMask</DetailsText>
+          <TitleText>Token:</TitleText>
+          <DetailsText>{importTxData.tokenId}</DetailsText>
+          <TitleText>Contract address:</TitleText>
+          <DetailsText>{importTxData.contractAddress}</DetailsText>
         </CenteredDiv>
       )}
       <CenteredDiv>
