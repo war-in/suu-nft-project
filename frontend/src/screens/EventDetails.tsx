@@ -7,8 +7,8 @@ import { useEthereum } from "../EthereumContext";
 import RankTile from "../components/RankTile";
 
 interface TxResultData {
-  contractAddress: string;
-  tokenId: string;
+  contractAddress?: string;
+  tokenId?: string;
   hash: string;
 }
 
@@ -22,7 +22,7 @@ function EventDetails() {
   const location = useLocation();
   const { event }: { event: Event } = location.state;
 
-  const { getCurrentRank, buyRank, getRanksInfoAsync } = useEthereum();
+  const { getCurrentRank, buyRank, getRanksInfoAsync, buyTickets } = useEthereum();
 
   const getAndSetCurrentRank = async () => {
     const rank = await getCurrentRank(event.ranksAddress);
@@ -46,9 +46,18 @@ function EventDetails() {
     fetchRanksData();
   }, [rankNumber]);
 
-  const buyTicket = () => {
-    // TODO request "ticketsNumber" tickets
-    console.log(ticketsNumber);
+  const buyTicket = async () => {
+    setImportTxData(undefined);
+    const hash = await buyTickets(
+      event.name,
+      +event.ticketPricePerRank[rankNumber],
+      ticketsNumber
+    );
+    if (hash) {
+      setImportTxData({
+        hash
+      });
+    }
   };
 
   const purchaseRank = async () => {
@@ -88,7 +97,7 @@ function EventDetails() {
       {importTxData && (
         <CenteredDiv>
           <TitleText>Purchase completed!</TitleText>
-          <DetailsText>Import your rank NFT to MetaMask</DetailsText>
+          <DetailsText>Import your NFT to MetaMask</DetailsText>
           <TitleText>Token:</TitleText>
           <DetailsText>{importTxData.tokenId}</DetailsText>
           <TitleText>Contract address:</TitleText>
@@ -100,10 +109,10 @@ function EventDetails() {
         {rankNumber > 0 ? (
           <RankTile
             data={{
-              saleStartTimePerRank: event.saleStartTimePerRank[rankNumber - 1],
+              saleStartTimePerRank: event.saleStartTimePerRank[rankNumber],
               maxTicketsPerUserPerRank:
-                event.maxTicketsPerUserPerRank[rankNumber - 1],
-              ticketPricePerRank: event.ticketPricePerRank[rankNumber - 1],
+                event.maxTicketsPerUserPerRank[rankNumber],
+              ticketPricePerRank: event.ticketPricePerRank[rankNumber],
             }}
             rankName={ranksNames[rankNumber - 1]}
             rankPrice={ranksPrices[rankNumber - 1]}
