@@ -1,13 +1,14 @@
-FROM node:20 AS web
-
-ENV GENERATE_SOURCEMAP false
+FROM node:20 AS webapp
 
 WORKDIR /home/app
-RUN mkdir /home/app/backend
-RUN mkdir /home/app/backend/build
 
-COPY . .
+COPY package.json package.json
+COPY package-lock.json package-lock.json
+
 RUN npm install
 
+COPY . .
+
 EXPOSE 3000
+
 ENTRYPOINT [ "npm", "run", "start" ]

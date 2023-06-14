@@ -1,17 +1,20 @@
 services:
   ganache:
-    build:
-      context: .
-      target: ganache
+    container_name: ganache
+    image: trufflesuite/ganache-cli
+
+    command: --host 0.0.0.0
     ports:
       - 8545:8545
     networks:
       - backend
 
   web:
+    container_name: webapp
     build:
       context: ./frontend
-      target: web
+      target: webapp
+
     depends_on:
       - ganache
     ports:
@@ -21,7 +24,11 @@ services:
     volumes:
       - /home/app/node_modules
       - ./frontend:/home/app
-      - ./backend/build:/home/backend/build
+      - ./common:/home/common
+      - ./backend/build/contracts:/home/app/abi
+    environment:
+      - GENERATE_SOURCEMAP=false
+      - WATCHPACK_POLLING=true
 
 networks:
   backend:
