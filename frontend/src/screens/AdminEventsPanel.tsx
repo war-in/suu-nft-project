@@ -57,7 +57,7 @@ function AdminEventsPanel() {
       const value = values[key];
 
       if (key.includes("saleStartTime")) {
-        saleStartTimePerRank[index] = new Date(value).getTime();
+        saleStartTimePerRank[index] = new Date(value).getTime() / 1000;
       } else if (key.includes("maxTicketsPerUser")) {
         maxTicketsPerUserPerRank[index] = +value;
       } else if (key.includes("ticketPrice")) {

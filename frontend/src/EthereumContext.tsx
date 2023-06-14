@@ -18,8 +18,25 @@ interface EthActions {
   getRanksContractAddress: (name: string) => Promise<string>;
   getWalletAddressAsync: () => Promise<string>;
   getRanksNumber: (contractAddress: string) => Promise<number>;
+  buyRank: (
+    contractAddress: string,
+    price: string,
+    currentRankAddress: string,
+    prevRankAddress?: string
+  ) => Promise<RankTxResult | undefined>;
+  buyTickets: (eventName: string, unitPrice: number, amount: number) => Promise<string | undefined>;
+  getRanksInfoAsync: (contractAddress: string) => Promise<RanksData>;
 }
 
+interface RankTxResult {
+  transactionHash: string;
+  tokenId: string;
+}
+interface RanksData {
+  prices: string[];
+  names: string[];
+  addresses: string[];
+}
 interface CreateRanksRequest {
   name: string;
   numberOfRanks: number;
@@ -116,7 +133,7 @@ export const EthereumContextProvider = ({ children }: Props): JSX.Element => {
             name,
             symbol,
             ranksAddress,
-            saleStartTimePerRank,
+            saleStartTimePerRank: saleStartTimePerRank.map((item: string) => +item * 1000),
             maxTicketsPerUserPerRank,
             ticketPricePerRank,
           } as unknown as Event;
@@ -137,7 +154,7 @@ export const EthereumContextProvider = ({ children }: Props): JSX.Element => {
     const rankNumber = await ranksContract.methods
       .getCurrentRank(walletAddress)
       .call({ from: walletAddress });
-    return rankNumber;
+    return +rankNumber + 1;
   };
 
   const getRanksNumber = async (contractAddress: string) => {
@@ -151,6 +168,36 @@ export const EthereumContextProvider = ({ children }: Props): JSX.Element => {
     return rankNumber;
   };
 
+  const getRanksInfoAsync = async (contractAddress: string) => {
+    const ranksContract = createContract(
+      DynamicContracts.RANKS,
+      contractAddress
+    );
+    const numberOfRanks = await getRanksNumber(contractAddress);
+    const result: RanksData = { prices: [], names: [], addresses: [] };
+
+    for (let i = 0; i < +numberOfRanks; i++) {
+      const rankAddress = await ranksContract.methods
+        .ranks(i)
+        .call({ from: walletAddress });
+
+      const rankContract = createContract(DynamicContracts.RANK, rankAddress);
+
+      const rankPrice = await rankContract.methods
+        .price()
+        .call({ from: walletAddress });
+      const rankName = await rankContract.methods
+        .name()
+        .call({ from: walletAddress });
+
+      result.prices.push(rankPrice);
+      result.names.push(rankName);
+      result.addresses.push(rankAddress);
+    }
+
+    return result;
+  };
+
   const createRanks = async (params: CreateRanksRequest) => {
     try {
       await contracts.ranksAdmin.methods
@@ -161,7 +208,7 @@ export const EthereumContextProvider = ({ children }: Props): JSX.Element => {
           params.ranksSymbols,
           params.ranksPrices
         )
-        .send({ from: walletAddress, gas: 5000000 });
+        .send({ from: walletAddress, gas: 10000000 });
     } catch (err) {
       console.warn(err);
     }
@@ -177,7 +224,7 @@ export const EthereumContextProvider = ({ children }: Props): JSX.Element => {
         params.maxTicketsPerUserPerRank,
         params.ticketPricePerRank
       )
-      .send({ from: walletAddress, gas: 10000000 })
+      .send({ from: walletAddress, gas: 5000000 })
       .catch(console.warn);
   };
 
@@ -186,6 +233,90 @@ export const EthereumContextProvider = ({ children }: Props): JSX.Element => {
       .ranksByName(name)
       .call({ from: walletAddress });
     return address;
+  };
+
+  const buyTickets = async (
+    eventName: string,
+    unitPrice: number,
+    amount: number,
+  ) => {
+    try {
+      const eventContractAddress = await contracts.ticketsAdmin.methods
+        .ticketsByName(eventName)
+        .call({ from: walletAddress });
+      const eventContract = createContract(
+        DynamicContracts.EVENT,
+        eventContractAddress
+      );
+      const totalPrice = unitPrice * amount;
+
+      const { transactionHash } = await web3.eth.sendTransaction({
+        from: walletAddress,
+        to: eventContractAddress,
+        value: web3.utils.toWei(totalPrice.toString(), "ether"),
+        gas: 500000,
+        data: eventContract.methods.buy(amount).encodeABI(),
+      });
+
+      return transactionHash;
+    } catch(err) {
+      console.warn(err);
+      return;
+    }
+  }
+
+  const buyRank = async (
+    contractAddress: string,
+    price: string,
+    currentRankAddress: string,
+    prevRankAddress?: string
+  ) => {
+    const ranksContract = createContract(
+      DynamicContracts.RANKS,
+      contractAddress
+    );
+
+    const rankContract = prevRankAddress
+      ? createContract(DynamicContracts.RANK, prevRankAddress)
+      : undefined;
+
+    if (rankContract) {
+      const token = await rankContract.methods
+        .ownerToToken(walletAddress)
+        .call({ from: walletAddress });
+      try {
+        await web3.eth.sendTransaction({
+          from: walletAddress,
+          to: prevRankAddress,
+          value: web3.utils.toWei("0", "ether"),
+          gas: 500000,
+          data: rankContract.methods
+            .approve(contractAddress, token)
+            .encodeABI(),
+        });
+      } catch (err) {
+        console.warn(err);
+        return;
+      }
+    }
+
+    const { transactionHash } = await web3.eth.sendTransaction({
+      from: walletAddress,
+      to: contractAddress,
+      value: web3.utils.toWei(price, "ether"),
+      gas: 500000,
+      data: ranksContract.methods.buy().encodeABI(),
+    });
+
+    const newRankContract = createContract(
+      DynamicContracts.RANK,
+      currentRankAddress
+    );
+    const newToken = await newRankContract.methods
+      .ownerToToken(walletAddress)
+      .call({ from: walletAddress });
+
+    return { transactionHash, tokenId: newToken };
   };
 
   const actions: EthActions = {
@@ -199,6 +330,9 @@ export const EthereumContextProvider = ({ children }: Props): JSX.Element => {
     getWalletAddressAsync,
     getRanksNumber,
     createEvent,
+    buyRank,
+    buyTickets,
+    getRanksInfoAsync,
   };
 
   return (

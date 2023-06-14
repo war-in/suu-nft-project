@@ -1,3 +1,3 @@
 export const ADMIN_WALLET_ADDRESS =
   "0x1d3d62962C128DE6e1E9D32b2303C455E4D3f334";
-export const CONTRACT_PROVIDER_URL = "http://localhost:8545";
+export const CONTRACT_PROVIDER_URL = "http://localhost:7545";
