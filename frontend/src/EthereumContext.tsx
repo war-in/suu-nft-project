@@ -24,6 +24,7 @@ interface EthActions {
     currentRankAddress: string,
     prevRankAddress?: string
   ) => Promise<RankTxResult | undefined>;
+  buyTickets: (eventName: string, unitPrice: number, amount: number) => Promise<string | undefined>;
   getRanksInfoAsync: (contractAddress: string) => Promise<RanksData>;
 }
 
@@ -132,7 +133,7 @@ export const EthereumContextProvider = ({ children }: Props): JSX.Element => {
             name,
             symbol,
             ranksAddress,
-            saleStartTimePerRank,
+            saleStartTimePerRank: saleStartTimePerRank.map((item: string) => +item * 1000),
             maxTicketsPerUserPerRank,
             ticketPricePerRank,
           } as unknown as Event;
@@ -234,6 +235,36 @@ export const EthereumContextProvider = ({ children }: Props): JSX.Element => {
     return address;
   };
 
+  const buyTickets = async (
+    eventName: string,
+    unitPrice: number,
+    amount: number,
+  ) => {
+    try {
+      const eventContractAddress = await contracts.ticketsAdmin.methods
+        .ticketsByName(eventName)
+        .call({ from: walletAddress });
+      const eventContract = createContract(
+        DynamicContracts.EVENT,
+        eventContractAddress
+      );
+      const totalPrice = unitPrice * amount;
+
+      const { transactionHash } = await web3.eth.sendTransaction({
+        from: walletAddress,
+        to: eventContractAddress,
+        value: web3.utils.toWei(totalPrice.toString(), "ether"),
+        gas: 500000,
+        data: eventContract.methods.buy(amount).encodeABI(),
+      });
+
+      return transactionHash;
+    } catch(err) {
+      console.warn(err);
+      return;
+    }
+  }
+
   const buyRank = async (
     contractAddress: string,
     price: string,
@@ -300,6 +331,7 @@ export const EthereumContextProvider = ({ children }: Props): JSX.Element => {
     getRanksNumber,
     createEvent,
     buyRank,
+    buyTickets,
     getRanksInfoAsync,
   };
 
