@@ -77,8 +77,7 @@ function EventDetails() {
         tokenId: result.tokenId,
         contractAddress: ranksAddresses[rankNumber],
         hash: result.transactionHash,
-        // title: `${ranksNames[rankNumber]} rank bought!`,
-        title: `New rank bought!`,
+        title: `"${ranksNames[rankNumber]}" rank bought!`,
       });
     }
   };
