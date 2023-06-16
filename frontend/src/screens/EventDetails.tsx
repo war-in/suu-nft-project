@@ -22,7 +22,8 @@ function EventDetails() {
   const location = useLocation();
   const { event }: { event: Event } = location.state;
 
-  const { getCurrentRank, buyRank, getRanksInfoAsync, buyTickets } = useEthereum();
+  const { getCurrentRank, buyRank, getRanksInfoAsync, buyTickets } =
+    useEthereum();
 
   const getAndSetCurrentRank = async () => {
     const rank = await getCurrentRank(event.ranksAddress);
@@ -55,7 +56,7 @@ function EventDetails() {
     );
     if (hash) {
       setImportTxData({
-        hash
+        hash,
       });
     }
   };
@@ -80,9 +81,9 @@ function EventDetails() {
 
   return event ? (
     <CenteredDiv>
-      <TitleText>Campaign name</TitleText>
+      <TitleText>Event name</TitleText>
       <DetailsText>{event.name}</DetailsText>
-      <TitleText>Buy ticket: </TitleText>
+      <TitleText>Buy ticket </TitleText>
       <HorizontalDiv>
         <TitleText>Number of tickets: </TitleText>
         <StyledInput
