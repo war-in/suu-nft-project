@@ -7,6 +7,7 @@ import { useEthereum } from "../EthereumContext";
 import RankTile from "../components/RankTile";
 
 interface TxResultData {
+  title: string;
   contractAddress?: string;
   tokenId?: string;
   hash: string;
@@ -57,6 +58,7 @@ function EventDetails() {
     if (hash) {
       setImportTxData({
         hash,
+        title: `You bought ${ticketsNumber} ticket/s!`,
       });
     }
   };
@@ -75,6 +77,8 @@ function EventDetails() {
         tokenId: result.tokenId,
         contractAddress: ranksAddresses[rankNumber],
         hash: result.transactionHash,
+        // title: `${ranksNames[rankNumber]} rank bought!`,
+        title: `New rank bought!`,
       });
     }
   };
@@ -97,12 +101,20 @@ function EventDetails() {
 
       {importTxData && (
         <CenteredDiv>
-          <TitleText>Purchase completed!</TitleText>
+          <TitleText>{importTxData.title}</TitleText>
           <DetailsText>Import your NFT to MetaMask</DetailsText>
-          <TitleText>Token:</TitleText>
-          <DetailsText>{importTxData.tokenId}</DetailsText>
-          <TitleText>Contract address:</TitleText>
-          <DetailsText>{importTxData.contractAddress}</DetailsText>
+          {importTxData.tokenId && (
+            <>
+              <TitleText>Token:</TitleText>
+              <DetailsText>{importTxData.tokenId}</DetailsText>
+            </>
+          )}
+          {importTxData.contractAddress && (
+            <>
+              <TitleText>Contract address:</TitleText>
+              <DetailsText>{importTxData.contractAddress}</DetailsText>
+            </>
+          )}
         </CenteredDiv>
       )}
       <CenteredDiv>
