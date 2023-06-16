@@ -26,13 +26,15 @@ function AdminEventsPanel() {
   const [ranksGroups, setRanksGroups] = useState<string[]>();
   const [numberOfRanks, setNumberOfRanks] = useState<number>(0);
   const [ranksAddress, setRanksAddress] = useState<string | null>(null);
+  const [ranksNames, setRanksNames] = useState<string[]>([]);
 
-  const { register, handleSubmit } = useForm<FormInputs>();
+  const { register, handleSubmit, reset } = useForm<FormInputs>();
   const {
     fetchRanksNames,
     getRanksContractAddress,
     getRanksNumber,
     createEvent,
+    getRanksInfoAsync,
   } = useEthereum();
 
   const showRanksForm = handleSubmit(async ({ ranksGroup }) => {
@@ -45,6 +47,15 @@ function AdminEventsPanel() {
   useEffect(() => {
     fetchRanksNames().then((names) => setRanksGroups(names));
   }, []);
+
+  const fetchRanksData = async () => {
+    const { names } = await getRanksInfoAsync(ranksAddress!);
+    setRanksNames(names);
+  };
+
+  useEffect(() => {
+    fetchRanksData();
+  }, [numberOfRanks]);
 
   const onSubmit = handleSubmit(async (values) => {
     const saleStartTimePerRank: number[] = [];
@@ -74,35 +85,42 @@ function AdminEventsPanel() {
       ticketPricePerRank,
     };
 
+    reset();
+
     createEvent(event);
   });
 
   const RankPart = ({ index }: { index: number }) => {
     return (
       <CenteredDiv>
-        <LabelText htmlFor="saleStartTime">Sale start time</LabelText>
-        <StyledInput
-          type="date"
-          className="form-control"
-          // placeholder="Symbol"
-          {...register(`saleStartTime${index}`)}
-          required
-        />
-        <LabelText htmlFor="maxTicketsPerUser">Max tickets per user</LabelText>
-        <StyledInput
-          type="number"
-          className="form-control"
-          // placeholder="Symbol"
-          {...register(`maxTicketsPerUser${index}`)}
-          required
-        />
-        <LabelText htmlFor="ticketPrice">Ticket price</LabelText>
-        <StyledInput
-          type="number"
-          className="form-control"
-          {...register(`ticketPrice${index}`)}
-          required
-        />
+        <LabelText>{index < 1 ? "Open sale" : ranksNames[index - 1]}</LabelText>
+        <CenteredDiv>
+          <LabelText htmlFor="saleStartTime">Sale start time</LabelText>
+          <StyledInput
+            type="date"
+            className="form-control"
+            // placeholder="Symbol"
+            {...register(`saleStartTime${index}`)}
+            required
+          />
+          <LabelText htmlFor="maxTicketsPerUser">
+            Max tickets per user
+          </LabelText>
+          <StyledInput
+            type="number"
+            className="form-control"
+            // placeholder="Symbol"
+            {...register(`maxTicketsPerUser${index}`)}
+            required
+          />
+          <LabelText htmlFor="ticketPrice">Ticket price</LabelText>
+          <StyledInput
+            type="number"
+            className="form-control"
+            {...register(`ticketPrice${index}`)}
+            required
+          />
+        </CenteredDiv>
       </CenteredDiv>
     );
   };
