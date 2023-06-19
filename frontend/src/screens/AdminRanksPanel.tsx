@@ -55,29 +55,32 @@ function AdminRanksPanel() {
   const RankPart = ({ index }: { index: number }) => {
     return (
       <CenteredDiv>
-        <LabelText htmlFor="rankName">Rank name</LabelText>
-        <StyledInput
-          type="text"
-          className="form-control"
-          placeholder="Name"
-          {...register(`rankName${index}`)}
-          required
-        />
-        <LabelText htmlFor="rankSymbol">Rank symbol</LabelText>
-        <StyledInput
-          type="text"
-          className="form-control"
-          placeholder="Symbol"
-          {...register(`rankSymbol${index}`)}
-          required
-        />
-        <LabelText htmlFor="rankPrice">Rank price</LabelText>
-        <StyledInput
-          type="number"
-          className="form-control"
-          {...register(`rankPrice${index}`)}
-          required
-        />
+        <LabelText>Rank {index + 1}</LabelText>
+        <CenteredDiv>
+          <LabelText htmlFor="rankName">Rank name</LabelText>
+          <StyledInput
+            type="text"
+            className="form-control"
+            placeholder="Name"
+            {...register(`rankName${index}`)}
+            required
+          />
+          <LabelText htmlFor="rankSymbol">Rank symbol</LabelText>
+          <StyledInput
+            type="text"
+            className="form-control"
+            placeholder="Symbol"
+            {...register(`rankSymbol${index}`)}
+            required
+          />
+          <LabelText htmlFor="rankPrice">Rank price</LabelText>
+          <StyledInput
+            type="number"
+            className="form-control"
+            {...register(`rankPrice${index}`)}
+            required
+          />
+        </CenteredDiv>
       </CenteredDiv>
     );
   };

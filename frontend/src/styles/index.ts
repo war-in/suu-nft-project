@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const CenteredDiv = styled.div`
   display: flex;
-  padding: 50px;
+  padding: 20px;
   flex-direction: column;
   justify-content: center;
   align-items: center;

@@ -7,6 +7,7 @@ import { useEthereum } from "../EthereumContext";
 import RankTile from "../components/RankTile";
 
 interface TxResultData {
+  title: string;
   contractAddress?: string;
   tokenId?: string;
   hash: string;
@@ -22,7 +23,8 @@ function EventDetails() {
   const location = useLocation();
   const { event }: { event: Event } = location.state;
 
-  const { getCurrentRank, buyRank, getRanksInfoAsync, buyTickets } = useEthereum();
+  const { getCurrentRank, buyRank, getRanksInfoAsync, buyTickets } =
+    useEthereum();
 
   const getAndSetCurrentRank = async () => {
     const rank = await getCurrentRank(event.ranksAddress);
@@ -55,7 +57,8 @@ function EventDetails() {
     );
     if (hash) {
       setImportTxData({
-        hash
+        hash,
+        title: `You bought ${ticketsNumber} ticket/s!`,
       });
     }
   };
@@ -74,15 +77,16 @@ function EventDetails() {
         tokenId: result.tokenId,
         contractAddress: ranksAddresses[rankNumber],
         hash: result.transactionHash,
+        title: `"${ranksNames[rankNumber]}" rank bought!`,
       });
     }
   };
 
   return event ? (
     <CenteredDiv>
-      <TitleText>Campaign name</TitleText>
+      <TitleText>Event name</TitleText>
       <DetailsText>{event.name}</DetailsText>
-      <TitleText>Buy ticket: </TitleText>
+      <TitleText>Buy ticket </TitleText>
       <HorizontalDiv>
         <TitleText>Number of tickets: </TitleText>
         <StyledInput
@@ -96,12 +100,20 @@ function EventDetails() {
 
       {importTxData && (
         <CenteredDiv>
-          <TitleText>Purchase completed!</TitleText>
+          <TitleText>{importTxData.title}</TitleText>
           <DetailsText>Import your NFT to MetaMask</DetailsText>
-          <TitleText>Token:</TitleText>
-          <DetailsText>{importTxData.tokenId}</DetailsText>
-          <TitleText>Contract address:</TitleText>
-          <DetailsText>{importTxData.contractAddress}</DetailsText>
+          {importTxData.tokenId && (
+            <>
+              <TitleText>Token:</TitleText>
+              <DetailsText>{importTxData.tokenId}</DetailsText>
+            </>
+          )}
+          {importTxData.contractAddress && (
+            <>
+              <TitleText>Contract address:</TitleText>
+              <DetailsText>{importTxData.contractAddress}</DetailsText>
+            </>
+          )}
         </CenteredDiv>
       )}
       <CenteredDiv>
