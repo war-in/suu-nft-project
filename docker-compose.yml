@@ -1,0 +1,40 @@
+services:
+  ganache:
+    container_name: ganache
+    image: trufflesuite/ganache-cli
+
+    command: >
+      --mnemonic "lighten crowd lavish spectacular bustling saw tasteless nauseating panoramic mixed absorbing past"
+      --host 0.0.0.0
+      --port 7545
+      --gasLimit 20000000
+
+    ports:
+      - 7545:7545
+    networks:
+      - backend
+
+  web:
+    container_name: webapp
+    build:
+      context: ./frontend
+      target: webapp
+
+    depends_on:
+      - ganache
+    ports:
+      - 3000:3000
+    networks:
+      - backend
+    volumes:
+      - /home/app/node_modules
+      - ./frontend:/home/app
+      - ./common:/home/common
+      - ./backend/build/contracts:/home/app/abi
+    environment:
+      - GENERATE_SOURCEMAP=false
+      - WATCHPACK_POLLING=true
+
+networks:
+  backend:
+    driver: "bridge"
