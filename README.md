@@ -132,18 +132,22 @@ Verify that your addresses are exactly the same as provided above. If it differs
 
 1. Rank
 
-   The Rank contract represents a rank/tier/level of a user. It uses [lazy minting](https://www.alchemy.com/overviews/lazy-minting#:~:text=creates%20the%20NFT.-,What%20is%20lazy%20minting%3F,-Lazy%20minting%20lets) concept. To check Rank's fields and methods go to `backend/contracts/ranks/Rank.sol` file.
+   The Rank contract represents a rank/tier/level of a user. It uses [lazy minting](https://www.alchemy.com/overviews/lazy-minting#:~:text=creates%20the%20NFT.-,What%20is%20lazy%20minting%3F,-Lazy%20minting%20lets) concept.
+
+   To check Rank's fields and methods go to `backend/contracts/ranks/Rank.sol` file.
 
 1. Ranks
 
    The Ranks contract is responsible for managing Rank contracts. It keeps addresses of few Rank contracts and allows users buying them.
    To buy `Rank3`, user has to have `Rank2` and sufficient money amount. User also needs to approve Ranks contract to burn his old rank (unless he doesn't have any).
    One user has one Rank at a time. There can be more than one `Ranks` contract.
+
    To read more about Ranks contract go to `backend/contracts/ranks/Ranks.sol` file.
 
 1. Ticket
 
    The Ticket contract sells tickets for events. Every `Ticket` has Ranks contract assigned, to be able to give special privileges for users with higher ranks.
+
    To read more about Ticket contract go to `backend/contracts/Ticket.sol` file.
 
 1. Admin
@@ -154,12 +158,14 @@ Verify that your addresses are exactly the same as provided above. If it differs
    
       The ManageRanks contract keeps all deployed Ranks contracts. It is necessary because there can be more than one group of Rank (more than one Ranks contract).
       It has addresses of all Ranks contracts and lets Admin create those Ranks.
+   
       Code of this contract is available here: `backend/contracts/admin/ManageRanks.sol`
 
    1. ManageTickets
    
       The ManageTickets contract keeps all deployed Tickets contracts. It is necessary because there can be a lot of events with tickets.
       It has addresses of all Ticket contracts and lets Admin create those Tickets.
+   
       Code of this contract is available here: `backend/contracts/admin/ManageTickets.sol`
 
 ## Exercises!
