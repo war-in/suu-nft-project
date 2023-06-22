@@ -32,15 +32,7 @@ contract Ranks is AccessControl {
     ) {
         _grantRole(ADMIN_ROLE, msg.sender);
 
-        for (uint i = 0; i < numberOfRanks_; i++) {
-            Rank rank = new Rank(
-                ranksNames[i],
-                ranksSymbols[i],
-                ranksPrices[i]
-            );
-            ranks.push(address(rank));
-        }
-        numberOfRanks = numberOfRanks_;
+        // TODO: create `numberOfRanks_` Rank contracts and set contract properties (use `new` keyword)
     }
 
     /**
@@ -50,22 +42,13 @@ contract Ranks is AccessControl {
         int currentRankId = getCurrentRank(msg.sender);
         uint nextRankId = uint(currentRankId + 1);
 
-        require(
-            nextRankId < ranks.length,
-            "You already have the highest rank!"
-        );
-
-        Rank nextRank = Rank(ranks[nextRankId]);
-        require(
-            msg.value >= nextRank.price(),
-            "Send more funds to get a higher rank."
-        );
-
-        if (currentRankId > -1) {
-            Rank currentRank = Rank(ranks[uint(currentRankId)]);
-            currentRank.burn(currentRank.ownerToToken(msg.sender));
-        }
-        nextRank.mintTo(msg.sender);
+        /**
+         TODO:
+         - check if user does not have the highest rank
+         - check if user sent enough funds (msg.value)
+         - if user has a rank (currentRankId > -1) burn the old rank (Rank.burn method)
+         - mint new rank to caller (mintTo)
+         */
     }
 
     /**

@@ -24,7 +24,7 @@ contract ManageRanks is AccessControl {
     constructor() {
         _grantRole(ADMIN_ROLE, msg.sender);
 
-        emit ManageRanksDeployed(address (this));
+        emit ManageRanksDeployed(address(this));
     }
 
     /**
