@@ -35,9 +35,7 @@ contract Rank is ERC721, ERC721Burnable, AccessControl {
         string memory symbol,
         uint256 price_
     ) ERC721(name, symbol) {
-        _grantRole(ADMIN_ROLE, msg.sender);
-
-        price = price_;
+        // TODO: grant admin role and set rank price
     }
 
     /**
@@ -45,15 +43,18 @@ contract Rank is ERC721, ERC721Burnable, AccessControl {
      * @param recipient Address the token will be minted to.
      */
     function mintTo(address recipient) public returns (uint256) {
-        require(hasRole(ADMIN_ROLE, msg.sender), "Caller is not an admin");
+        /**
+         TODO:
+         - check if caller is an admin
+         - increment and get current token id (check Counters.Counter methods)
+         - mint new token (use _safeMint method)
+         - assign token to caller
+         - return id of the minted token
 
-        currentTokenId.increment();
-        uint256 newItemId = currentTokenId.current();
-        _safeMint(recipient, newItemId);
+         Hint: to check something use `require`
+         */
 
-        ownerToToken[recipient] = newItemId;
-
-        return newItemId;
+        return 0;
     }
 
     function supportsInterface(

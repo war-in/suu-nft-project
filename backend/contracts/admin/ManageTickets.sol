@@ -20,7 +20,7 @@ contract ManageTickets is AccessControl {
     constructor() {
         _grantRole(ADMIN_ROLE, msg.sender);
 
-        emit ManageTicketsDeployed(address (this));
+        emit ManageTicketsDeployed(address(this));
     }
 
     /**

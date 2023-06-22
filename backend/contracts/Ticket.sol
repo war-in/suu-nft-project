@@ -79,24 +79,13 @@ contract Ticket is ERC721, AccessControl {
         Ranks ranks = Ranks(ranksAddress);
         uint rankId = uint(ranks.getCurrentRank(msg.sender) + 1);
 
-        require(
-            block.timestamp >= saleStartTimePerRank[rankId],
-            "Sale haven't started for your Rank yet!"
-        );
-        require(
-            amount <= maxTicketsPerUserPerRank[rankId] - balanceOf(msg.sender),
-            "You can't buy so many tickets with your Rank."
-        );
-        require(
-            msg.value >= ticketPricePerRank[rankId] * amount,
-            "Send more funds to buy those tickets."
-        );
-
-        for (uint i = 0; i < amount; i++) {
-            currentTokenId.increment();
-            uint256 newItemId = currentTokenId.current();
-            _safeMint(msg.sender, newItemId);
-        }
+        /**
+         TODO:
+         - check if sale started for caller's rank
+         - check if user can buy more tickets
+         - check if user has enough funds to buy `amount` tickets
+         - mint new tickets
+         */
     }
 
     function getSaleStartTimePerRank()
