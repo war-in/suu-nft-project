@@ -63,6 +63,71 @@ Documentation is available [here](https://docs.google.com/document/d/1TLMwFXpCth
    You can find more about Truffle commands [here](https://trufflesuite.com/docs/truffle/reference/command-line-options/).
    For example, run `test` command to run project's tests.
 
+
+## Frontend setup
+
+1. Install MetaMask as a chrome browser extenstion.  
+Go to chrome extensions -> search for MetaMask and press install. Pin the metamask extension to the top bar.
+
+![Metamask chrome](ss/ss1.jpg)
+
+1. Create an account: 
+- open MetaMask
+- press create an account
+- provide password
+- secure my wallet
+- **remember to save your passphrase in case of password restoring**. 
+
+![Metamask](ss/ss3.jpg)
+
+![Metamask](ss/ss4.jpg)
+
+![Metamask](ss/ss5.jpg)
+
+Next, log in to your account. You should see the screen with one account and 0 ETH balance on the Ethereum Mainnet.
+
+![Metamask account](ss/ss2.jpg)
+
+1. Adding a localhost test network:
+- click a profile icon in the top right corner and go to settings
+- in the search bar type: “Show test networks” and open this setting (it should be also reachable from the Advanced tab after opening settings).
+- toggle on this setting to show test networks. 
+- verify on the main screen that networks like Goerli or Sepolia have appeared.
+
+![Metamask](ss/ss6.jpg)
+
+- go back to the main screen
+- click the rounded corner button with network name Ethereum Mainnet next to the profile icon. 
+- click the Add network button. The new chrome tab should open immediately, open it and go to Networks settings. Click add a network button, fill the form with the same data as presented below, then save the network. Go back to the app screen, open MetaMask and switch the network to **localhost7545**.
+
+![Metamask](ss/ss7.jpg)
+
+![Metamask](ss/ss8.jpg)
+
+1. Importing test wallet to MetaMask:
+
+- if ```docker compose up``` command worked properly, you would see the same list of test accounts as shown on the screenshot below.
+Verify that your addresses are exactly the same as provided above. If it differs, check whether the docker configuration has the same mnemonic as presented on the screenshot. If not, change mnemonic to this one: ```lighten crowd lavish spectacular bustling saw tasteless nauseatic panoramic mixed absorbing past```
+
+![Metamask](ss/ss9.jpg)
+
+- open your MetaMask wallet -> profile icon -> Import account -> Select Type -> Private key. 
+- paste in the textinput private key from the index 0 (with prefix 0x90ec..) - this will import your admin account from which you will be able to create ranks and events. 
+- it is recommended to import any other account (from a private keys list, anyone could be selected). This account will simulate a user's account, who will only have an access to events tab, for ranks and tickets purchases.
+
+![Metamask](ss/ss10.jpg)
+
+1. Debugger (optional)
+
+- open new terminal from the root directory -> ```cd backend && npm install abi-decoder```
+- restart truffle console
+- ```const abiDecoder = require('abi-decoder');```  - this command is importing params decoder to the environment
+- ```const abi = require(**path_to_your_contract_build** e. g. './build/contracts/ManageRanks.json').abi``` - reading contract’s interface
+- ```abiDecoder.addABI(abi)```  - adding an ABI to the decoder instance
+- ```let tx = await web3.eth.getTransaction(th_hash in single quotes);```  - import a transaction that reverted, the hash is displayed in the ganache-cli
+- ```tx```  - show transaction params
+- ```abiDecoder.decodeMethod(tx.input);```  - show transaction data which was sent from the frontend app
+
 ## Contracts
 
 1. Rank
@@ -118,3 +183,14 @@ Search for comments with TODO's and have fun :fire:
 4. ManageTickets.sol
 
    - emit an event
+
+## Troubleshooting
+
+- **my transaction has been reverted** - analyze revert reason from the contract’s code if it is implemented, if not go to 8.5 Debugging section and try to analyze your code
+- **I run out of eth** - just restart docker or ganache node
+- **all my transactions are stucked and are in the state Processing, Pending or Queued** - that’s a common issue from the MetaMask local testnets themselves, the quick fix is to import another account via private key from the available in the node, optionally: you could wait ~5-10 minutes until the transaction will be finalized (not recommended)
+- **I cannot change my account to the another one** - open MetaMask -> click the button which is on the left side from the account address -> disconnect current account OR switch to the wanted one
+- **my transaction fails due to the incorrect nonce (could be detected both in MetaMask and chrome Inspect)** -  Settings -> Advanced -> Clear activity and nonce data -> Clear activity tab data
+
+![Metamask](ss/ss11.jpg)
+
