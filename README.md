@@ -88,7 +88,7 @@ Next, log in to your account. You should see the screen with one account and 0 E
 
 ![Metamask account](ss/ss2.jpg)
 
-1. Adding a localhost test network:
+2. Adding a localhost test network:
 - click a profile icon in the top right corner and go to settings
 - in the search bar type: “Show test networks” and open this setting (it should be also reachable from the Advanced tab after opening settings).
 - toggle on this setting to show test networks. 
@@ -104,7 +104,7 @@ Next, log in to your account. You should see the screen with one account and 0 E
 
 ![Metamask](ss/ss8.jpg)
 
-1. Importing test wallet to MetaMask:
+3. Importing test wallet to MetaMask:
 
 - if ```docker compose up``` command worked properly, you would see the same list of test accounts as shown on the screenshot below.
 Verify that your addresses are exactly the same as provided above. If it differs, check whether the docker configuration has the same mnemonic as presented on the screenshot. If not, change mnemonic to this one: ```lighten crowd lavish spectacular bustling saw tasteless nauseatic panoramic mixed absorbing past```
@@ -117,7 +117,7 @@ Verify that your addresses are exactly the same as provided above. If it differs
 
 ![Metamask](ss/ss10.jpg)
 
-1. Debugger (optional)
+4. Debugger (optional)
 
 - open new terminal from the root directory -> ```cd backend && npm install abi-decoder```
 - restart truffle console
