@@ -96,3 +96,21 @@ Documentation is available [here](https://docs.google.com/document/d/1TLMwFXpCth
       The ManageTickets contract keeps all deployed Tickets contracts. It is necessary because there can be a lot of events with tickets.
       It has addresses of all Ticket contracts and lets Admin create those Tickets.
       Code of this contract is available here: `backend/contracts/admin/ManageTickets.sol`
+
+## Exercises!
+
+Search for comments with TODO's and have fun :fire:
+
+1. Rank.sol
+
+   - fill `constructor` implementation
+   - fill `mintTo` implementation
+
+2. Ranks.sol
+
+   - fill `constructor` implementation
+   - fill `buy` implementation
+
+3. Ticket.sol
+
+   - fill `buy` implementation
