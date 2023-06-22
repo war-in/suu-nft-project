@@ -53,7 +53,7 @@ Documentation is available [here](https://docs.google.com/document/d/1TLMwFXpCth
    Whenever You make any changes to smart contracts, run a migration.
    The output of the command should look simillar to:
    ```
-   truffle(development)> migrate
+   truffle(development)> migrate --reset
 
    Compiling your contracts...
    [...]
