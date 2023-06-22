@@ -114,3 +114,7 @@ Search for comments with TODO's and have fun :fire:
 3. Ticket.sol
 
    - fill `buy` implementation
+
+4. ManageTickets.sol
+
+   - emit an event
